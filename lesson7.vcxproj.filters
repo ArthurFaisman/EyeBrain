@@ -24,12 +24,6 @@
     <ClCompile Include="img.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="fftn.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TGAHelper.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="nrutil.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -39,21 +33,12 @@
     <ClCompile Include="curvatures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="complex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="bmp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fftn.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="img.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TGAHelper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TGA.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="matrix.h">
@@ -69,6 +54,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dataProcess.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="complex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bmp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

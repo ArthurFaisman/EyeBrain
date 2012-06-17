@@ -1,12 +1,14 @@
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+//#include <stdlib.h>
+//#include <stdio.h>
+//#include <string.h>
 #include <math.h>
 #include "curvatures.h"
+/*
 extern "C" {
 #include "nrutil.h"    //  Numerical Recipes
 }
+*/
 #define PMODE 0644
 #define M_PI 3.141592653589793238462643
 
@@ -41,6 +43,25 @@ void setPrincipalCurvatures(float **unnormalized_r, float **kappa1, float **kapp
 	float  tmp;
 	float  **d1r, **d2r, **d11r, **d12r, **d22r,  **gaussK,  **meanH, **r;
 
+	d1r = new float*[N];
+	d2r = new float*[N];
+	d11r = new float*[N];
+	d12r = new float*[N];
+	d22r = new float*[N];
+	gaussK = new float*[N];
+	meanH = new float*[N];
+	r = new float*[N];
+	for (int i=0; i < N; i++){
+		d1r[i] = new float[N];
+		d2r[i] = new float[N];
+		d11r[i] = new float[N];
+		d12r[i] = new float[N];
+		d22r[i] = new float[N];
+		gaussK[i] = new float[N];
+		meanH[i] = new float[N];
+		r[i] = new float[N];
+	}
+/*
 	r = matrix(0,N-1,0,N-1);
 	d1r =  matrix(0,N-1,0,N-1);
 	d11r = matrix(0,N-1,0,N-1);
@@ -49,7 +70,7 @@ void setPrincipalCurvatures(float **unnormalized_r, float **kappa1, float **kapp
 	d12r = matrix(0,N-1,0,N-1);
 	gaussK = matrix(0,N-1,0,N-1);
 	meanH  = matrix(0,N-1,0,N-1);
-
+*/
 	
 	for (int i=0; i < N; i++){
 		for (int j=0; j < N; j++){
@@ -157,6 +178,7 @@ void setPrincipalCurvatures(float **unnormalized_r, float **kappa1, float **kapp
 		}
 	}
 
+	/*
 	free_matrix(d1r, 0,N-1,0,N-1);
 	free_matrix(d11r, 0,N-1,0,N-1);
 	free_matrix(d2r, 0,N-1,0,N-1);
@@ -164,4 +186,25 @@ void setPrincipalCurvatures(float **unnormalized_r, float **kappa1, float **kapp
 	free_matrix(d12r, 0,N-1,0,N-1);
 	free_matrix(gaussK, 0,N-1,0,N-1);
 	free_matrix(meanH,  0,N-1,0,N-1);
+	*/
+
+	for (int i=0; i < N; i++){
+		delete [] d1r[i];
+		delete [] d2r[i];
+		delete [] d11r[i];
+		delete [] d12r[i];
+		delete [] d22r[i];
+		delete [] gaussK[i];
+		delete [] meanH[i];
+		delete [] r[i];
+	}
+	
+	delete [] d1r;
+	delete [] d2r;
+	delete [] d11r;
+	delete [] d12r;
+	delete [] d22r;
+	delete [] gaussK;
+	delete [] meanH;
+	delete [] r;
 }

@@ -1,25 +1,16 @@
-class AUX_RGBImageRec {
 
-	void convertBGRtoRGB();
+#ifndef BMP_H
+#define BMP_H
 
-public:
 
-	byte *data;
+BYTE* ConvertRGBToBMPBuffer ( BYTE* Buffer, int width, int height, long* newsize );
 
-	DWORD sizeX;
+BYTE* ConvertBMPToRGBBuffer ( BYTE* Buffer, int width, int height);
 
-	DWORD sizeY;
+bool LoadBMPIntoDC ( HDC hDC, LPCTSTR bmpfile );
 
-	bool NoErrors;
+bool SaveBMP ( BYTE* Buffer, int width, int height, long paddedsize, LPCTSTR bmpfile );
 
-	AUX_RGBImageRec(): NoErrors(false), data(NULL) {};
+BYTE* LoadBMP ( int* width, int* height, long* size, LPCTSTR bmpfile );
 
-	AUX_RGBImageRec(const char *FileName);
-
-	~AUX_RGBImageRec();
-
-	bool loadFile(const char *FileName);
-
-	friend AUX_RGBImageRec *auxDIBImageLoad(const char *FileName);
-
-};
+#endif

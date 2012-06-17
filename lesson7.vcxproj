@@ -122,30 +122,28 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OutputFile>.\Debug\lesson7.exe</OutputFile>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;odbc32.lib;odbccp32.lib;libfftw3-3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="bmp.cpp" />
+    <ClCompile Include="complex.cpp" />
     <ClCompile Include="curvatures.cpp" />
     <ClCompile Include="dataProcess.cpp" />
-    <ClCompile Include="fftn.c" />
     <ClCompile Include="img.c" />
     <ClCompile Include="lesson7.cpp" />
     <ClCompile Include="nrutil.c" />
-    <ClCompile Include="TGAHelper.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bmp.h" />
+    <ClInclude Include="complex.h" />
     <ClInclude Include="curvatures.h" />
     <ClInclude Include="dataProcess.h" />
-    <ClInclude Include="fftn.h" />
     <ClInclude Include="img.h" />
     <ClInclude Include="lesson7.h" />
     <ClInclude Include="matrix.h" />
     <ClInclude Include="nrutil.h" />
-    <ClInclude Include="TGA.h" />
-    <ClInclude Include="TGAHelper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

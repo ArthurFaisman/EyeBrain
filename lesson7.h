@@ -14,7 +14,6 @@ The following is the note that was included in that code:
 
 
 
-
 #define RESEARCH_SUBJECT_TEST_MODE TRUE
 
 #define OUTPUT_FILE_NAME "data\\data.txt"
@@ -39,6 +38,7 @@ The following is the note that was included in that code:
 
 #define HIGH_AMPLITUDE 0.105              //  These are the possible standard deviations of the height field.
 #define LOW_AMPLITUDE 0.05
+
 
 
 // the deviation of the light source from the horizontal in degrees, positive corresponds to vertical
@@ -67,7 +67,7 @@ double getSecondsSinceProgramStart();
 void startWobble();
 
 #define MESH_WIDTH   350//((int)(200*(mirror?1:1.5))) // make sure to update the variable below accordingly!!!
-#define MAX_MESH_WIDTH 350//((int)(300*1.5)) // for use in initialization of arrays	
+#define MAX_MESH_WIDTH 350 //((int)(300*1.5)) // for use in initialization of arrays	
 #define MESH_HEIGHT  ((int)(MESH_WIDTH*(((double)FIELD_HEIGHT)/FIELD_WIDTH))) // mesh density auto scales to the chosen field dimensions
 #define MAX_MESH_HEIGHT  ((int)(MAX_MESH_WIDTH*(((double)FIELD_HEIGHT)/FIELD_WIDTH)))
 
@@ -202,10 +202,7 @@ void setModelLocation();
 bool evaluateCurvatureDiagnosticCriterion(int i, int j);
 
 
-
-
-double * realPart;
-double * imPart;
+fftw_complex * fftComplexField;
 GLfloat ***wavyField;
 GLfloat ***normField;
 GLfloat **radiusField;
@@ -368,3 +365,11 @@ bool computeMeshAtNextScreenRefresh;
 
 
 bool computingNextMesh; // if true, the next mesh has not yet been computed (dont render the next mesh yet!)
+
+
+// used for storing the value of the window coordinates of a dot location
+void saveScreenshot(int centerX, int centerY, int width, int height, const char* fileName);
+GLdouble extremaWin_x, extremaWin_y, extremaWin_z;
+int screenshotBoxWidth = 6;
+int screenshotBoxHeight = 15;
+const char screenshotBaseDir[] = "C:\\Users\\Arthur\\Dropbox\\psychophysics\\EyeBrain\\Data\\screenshots\\";

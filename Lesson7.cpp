@@ -17,13 +17,17 @@ The following is the note that was included in that code:
 #include <stdlib.h>
 #include <gl\gl.h>			// Header File For The OpenGL32 Library
 #include <gl\glu.h>			// Header File For The GLu32 Library
-#include "bmp.h"		// Header File For The Glaux Library
+#include <string.h>
+#include <sstream>
+//#include "complex.h"
+#include <fftw3.h>
 extern "C"
 {
-#include "fftn.h"
-#include "TGA.h"
-#include "TGAHelper.h"
+//#include "fftn.h"
+//#include "TGA.h"
+//#include "TGAHelper.h"
 }
+#include "bmp.h"
 #include "curvatures.h"
 #include <cmath>
 #include <time.h>
@@ -34,35 +38,24 @@ extern "C"
 using namespace std;
 
 
-AUX_RGBImageRec *LoadBMP(char *Filename)				// Loads A Bitmap Image
-{
-	FILE *File=NULL;									// File Handle
-
-	if (!Filename)										// Make Sure A Filename Was Given
-	{
-		return NULL;									// If Not Return NULL
-	}
-
-	File=fopen(Filename,"r");							// Check To See If The File Exists
-
-	if (File)											// Does The File Exist?
-	{
-		fclose(File);									// Close The Handle
-		return auxDIBImageLoad(Filename);				// Load The Bitmap And Return A Pointer
-	}
-
-	return NULL;										// If Load Failed Return NULL
-}
 
 void LoadGLTextures()								// Load Bitmaps And Convert To Textures
 {
 
-	AUX_RGBImageRec *TextureImage[NUM_TEXTURES];					// Create Storage Space For The Texture
+	BYTE *bmpData[NUM_TEXTURES];
+	BYTE *rgbData[NUM_TEXTURES];
+	int widths[NUM_TEXTURES];
+	int heights[NUM_TEXTURES];
+	long sizes[NUM_TEXTURES];
 
-	memset(TextureImage,0,sizeof(void *)*NUM_TEXTURES);  //memset(TextureImage,0,sizeof(void *)*2);  		         	// Set The Pointer To NULL
+	//memset(bmpData,0,sizeof(void *)*NUM_TEXTURES);  //memset(TextureImage,0,sizeof(void *)*2);  		         	// Set The Pointer To NULL
+	//memset(rgbData,0,sizeof(void *)*NUM_TEXTURES);
+
 
 	for (int i = 0; i < NUM_TEXTURES; i++){
-		TextureImage[i]=LoadBMP((char *)textureFilenames[i].c_str());
+		// TextureImage[i]=LoadBMP((char *)textureFilenames[i].c_str());
+		bmpData[i]=LoadBMP(&(widths[i]), &(heights[i]),&(sizes[i]),(char *)textureFilenames[i].c_str());
+		rgbData[i] = ConvertBMPToRGBBuffer ( bmpData[i], widths[i], heights[i] );
 	}
 
 
@@ -79,45 +72,30 @@ void LoadGLTextures()								// Load Bitmaps And Convert To Textures
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-		glTexImage2D(GL_TEXTURE_2D, 0, 3, TextureImage[i]->sizeX, TextureImage[i]->sizeY,
-			0, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[i]->data);
+		glTexImage2D(GL_TEXTURE_2D, 0, 3, widths[i], heights[i], 
+			0, GL_RGB, GL_UNSIGNED_BYTE, rgbData[i]);
 		glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
 		glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
 
 		//		double value = -1.0;
 		// compute the average color of each texture
 
-		for (int j=0; j<TextureImage[i]->sizeX*TextureImage[i]->sizeY*3; j++){
+		for (int j=0; j<widths[i]*heights[i]*3; j++){
 			//			value = max(TextureImage[i]->data[j], value);
-			tempPixel[j%3] += TextureImage[i]->data[j];
+			tempPixel[j%3] += rgbData[i][j];
 		}
 
 		for (int j=0; j < 3; j++){
 			//			value = (1.0/256)*((double)tempPixel[j]) / ((double)TextureImage[i]->sizeX*TextureImage[i]->sizeY);
-			averageTextureColor[i][j] = (1.0/256)*((double)tempPixel[j]) / ((double)TextureImage[i]->sizeX*TextureImage[i]->sizeY);
+			averageTextureColor[i][j] = (1.0/256)*((double)tempPixel[j]) / ((double)widths[i]*heights[i]);
 		}
 	}
-
-
-
-
-	//NOTE: the code below to delete the textures produced errors. So, here's a known memory leak.
-	// this can be fixed if necessary, but there is only a constant number of textures loaded in so it does
-	// not cause any problems for this application
-	/*
-	for (int i=0; i<NUM_TEXTURES; i++)
-	{
-	if (TextureImage[i])						// If Texture Exists
-	{
-	if (TextureImage[i]->data)			// If Texture Image Exists
-	{
-	delete TextureImage[i]->data;	// Free The Texture Image Memory
+	
+	for (int i=0; i < NUM_TEXTURES; i++){
+		delete [] rgbData[i];
+		delete [] bmpData[i];
 	}
-	delete TextureImage[i];		// Free The Image Structure
-	}
-	}
-	*/
-
+	
 }
 
 GLvoid ReSizeGLScene(GLsizei width, GLsizei height)		// Resize And Initialize The GL Window
@@ -137,6 +115,7 @@ GLvoid ReSizeGLScene(GLsizei width, GLsizei height)		// Resize And Initialize Th
 
 int InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 {
+
 
 	srand( time(NULL));
 
@@ -159,8 +138,10 @@ int InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 	numSamplesSoFar = 0;
 
 	//initialize mesh variables:
-	realPart = new double[MAX_INIT_MESH_SIZE*MAX_INIT_MESH_SIZE];
-	imPart = new double[MAX_INIT_MESH_SIZE*MAX_INIT_MESH_SIZE];
+	//realPart = new double[MAX_INIT_MESH_SIZE*MAX_INIT_MESH_SIZE];
+	//imPart = new double[MAX_INIT_MESH_SIZE*MAX_INIT_MESH_SIZE];
+	fftComplexField = (fftw_complex *) fftw_alloc_complex(MAX_INIT_MESH_SIZE*MAX_INIT_MESH_SIZE);
+	//fftComplexField = (fftw_complex *) alloc_complex(MAX_INIT_MESH_SIZE*MAX_INIT_MESH_SIZE);
 	radiusField = new GLfloat * [MAX_INIT_MESH_SIZE];
 	principalCurvature1Field = new GLfloat * [MAX_INIT_MESH_SIZE];
 	principalCurvature2Field = new GLfloat * [MAX_INIT_MESH_SIZE];
@@ -378,7 +359,16 @@ int DrawGLScene(GLvoid)									// Here's Where We Do All The Drawing
 		zrot+=zspeed;
 
 	}
+	
+	int screenshotCenterX = (int) extremaWin_x;
+	int screenshotCenterY = (int) extremaWin_y;
+	std::stringstream ss;
+	ss << screenshotBaseDir;
+	ss << "ss.tga";
+	const string tmp = ss.str();
 
+	//saveScreenshot(screenshotCenterX, screenshotCenterY, screenshotBoxWidth,screenshotBoxHeight, tmp.c_str());
+	
 	return TRUE;										// Keep Going
 }
 
@@ -717,42 +707,6 @@ int WINAPI WinMain(	HINSTANCE	hInstance,			// Instance
 			else									// Not Time To Quit, Update Screen
 			{
 				SwapBuffers(hDC);					// Swap Buffers (Double Buffering)
-
-				// there was some weirdness with multiple calls per key press (maybe from holding down the key? thats not what it looked like though)
-				// but since were only interested in one keypress per keystroke, I use the following hacky code to ensure that there is only one call per key press
-				if (! keys['D'] && ! keys['d'] && !keys['B'] && !keys['b']
-#if ALLOW_SPECULAR_TOGGLE
-				&& !keys['q'] && !keys['Q']
-#endif
-				){
-
-					clearPressedKeys();
-				} else {
-
-					if (clickAllowed /*!screenBlank && !showDotPreimage*/){ // makes sure that the keypress is not handled when there is nothing going on
-						bool v_pressed = false;
-						bool h_pressed = false;
-						bool q_pressed = false;
-						if (keys['D'])
-						{
-							v_pressed = true;
-						} else if (keys['d']){
-							v_pressed = true;
-						} else if (keys['B']){
-							h_pressed = true;
-						} else if (keys['b']){
-							h_pressed = true;
-						} else if (keys['Q']){
-							q_pressed = true;
-						} else if (keys['q']){
-							q_pressed = true;
-						}
-						clearPressedKeys();
-						if (v_pressed) processKeyPress('d');
-						else if (h_pressed) processKeyPress('b');
-						else if (q_pressed && ALLOW_SPECULAR_TOGGLE) mirror = !mirror;//specularOnly = !specularOnly; 
-					}
-				}
 			}
 		}
 	}
@@ -840,6 +794,23 @@ void drawDot(GLfloat dotScaleFactor){
 
 	glScalef(dotScaleFactor, dotScaleFactor, dotScaleFactor);
 	drawSphere(200);
+
+	// get on-screen coordinates
+
+	GLdouble model_view[16];
+	glGetDoublev(GL_MODELVIEW_MATRIX, model_view);
+
+	GLdouble projection[16];
+	glGetDoublev(GL_PROJECTION_MATRIX, projection);
+
+	GLint viewport[4];
+	glGetIntegerv(GL_VIEWPORT, viewport);
+
+	gluProject(0.0,0.0,0.0,
+				model_view, projection, viewport,
+				&extremaWin_x, &extremaWin_y, &extremaWin_z);
+
+
 
 	glPopMatrix();
 
@@ -984,7 +955,7 @@ void drawCylinder(int numSides){
 	glNormal3f(currentX, currentY,0.0f);
 	glVertex3f(currentX, currentY,0.5f);
 	glNormal3f(currentX, currentY,0.0f);
-	glVertex3f(currentX, currentY,-0.5f);
+	glVertex3f(currentX, currentY,-0.5f);	
 
 	for (int i=0; i < numSides; i++){
 		currentAngle += angleDelta;
@@ -1031,15 +1002,18 @@ void drawCylinder(int numSides){
 void generateNewMesh(){
 
 
-	int dims[] = {INIT_MESH_SIZE, INIT_MESH_SIZE};
-
+	int dims[2] = {INIT_MESH_SIZE, INIT_MESH_SIZE};
 
 	for (int i = 0; i < INIT_MESH_SIZE*INIT_MESH_SIZE; i++){
-		realPart[i] = ((double)rand())/RAND_MAX - 0.5;   //  Between -.5 and .5 with mean 0.
-		imPart[i] = 0.0;
+		fftComplexField[i][0] = ((double)rand())/RAND_MAX - 0.5;
+		fftComplexField[i][1] = 0.0;
+//		realPart[i] = ((double)rand())/RAND_MAX - 0.5;   //  Between -.5 and .5 with mean 0.
+//		imPart[i] = 0.0;
 	}
 
-	fftn(2, dims, realPart, imPart, -1, 1.0 * INIT_MESH_SIZE);
+	fftw_plan fftPlan = fftw_plan_dft_2d(INIT_MESH_SIZE, INIT_MESH_SIZE, fftComplexField, fftComplexField, FFTW_FORWARD, FFTW_ESTIMATE);
+	fftw_execute(fftPlan);
+//	fftn(2, dims, realPart, imPart, -1, 1.0 * INIT_MESH_SIZE);
 
 	for (int i = 0; i < INIT_MESH_SIZE; i++){
 		for (int j = 0; j < INIT_MESH_SIZE; j++){
@@ -1051,23 +1025,33 @@ void generateNewMesh(){
 				!((i2 + j1 < KMAX2) & (i2 + j1 > KMIN2)) &
 				!((i1 + j2 < KMAX2) & (i1 + j2 > KMIN2)) &
 				!((i2 + j2 < KMAX2) & (i2 + j2 > KMIN2)))
-				realPart[i*INIT_MESH_SIZE+j] = imPart[i*INIT_MESH_SIZE+j] = 0;
-			else imPart[i*INIT_MESH_SIZE+j] = 0;
+				fftComplexField[i*INIT_MESH_SIZE+j][0] = fftComplexField[i*INIT_MESH_SIZE+j][1] = 0;
+			else fftComplexField[i*INIT_MESH_SIZE+j][1] = 0;
 		}
 	}
-	fftn(2, dims, realPart, imPart, 1, 1.0 * INIT_MESH_SIZE);
+	
+	fftw_destroy_plan(fftPlan);
+	//destroy_plan(fftPlan);
+	fftPlan = fftw_plan_dft_2d(INIT_MESH_SIZE, INIT_MESH_SIZE, fftComplexField, fftComplexField, FFTW_BACKWARD, FFTW_ESTIMATE);
+	fftw_execute(fftPlan);
+//	fftn(2, dims, realPart, imPart, 1, 1.0 * INIT_MESH_SIZE);
 
 
 	double sumsquare = 0.0;
 
 	for (int i = 0; i < INIT_MESH_SIZE; i++)
 		for (int j = 0; j < INIT_MESH_SIZE; j++)
-			sumsquare +=  realPart[i*INIT_MESH_SIZE+j] * realPart[i*INIT_MESH_SIZE+j];
+			sumsquare +=  fftComplexField[i*INIT_MESH_SIZE+j][0] * fftComplexField[i*INIT_MESH_SIZE+j][0];
+//			sumsquare +=  realPart[i*INIT_MESH_SIZE+j] * realPart[i*INIT_MESH_SIZE+j];
 
 	for (int i = 0; i < INIT_MESH_SIZE; i++)
 		for (int j = 0; j < INIT_MESH_SIZE; j++)
-			radiusField[i][j] = (GLfloat) realPart[i*INIT_MESH_SIZE+j] / 
+			radiusField[i][j] = (GLfloat) fftComplexField[i*INIT_MESH_SIZE+j][0] / 
 			( sqrt(sumsquare)/INIT_MESH_SIZE ) * (amplitude?HIGH_AMPLITUDE:LOW_AMPLITUDE); 
+//			radiusField[i][j] = (GLfloat) realPart[i*INIT_MESH_SIZE+j] / 
+//			( sqrt(sumsquare)/INIT_MESH_SIZE ) * (amplitude?HIGH_AMPLITUDE:LOW_AMPLITUDE); 
+
+	fftw_destroy_plan(fftPlan);
 
 #if FIND_SD_HEIGHT_FIELD
 
@@ -1097,8 +1081,8 @@ void generateNewMesh(){
 	for (int i = 0; i < MESH_HEIGHT; i++){
 		currentHeight = ((GLfloat)FIELD_HEIGHT)*i/(MESH_HEIGHT-1)-(((float)FIELD_HEIGHT)/2);
 		for (int j = 0; j < MESH_WIDTH; j++){
-
 			currentWidth = ((GLfloat)FIELD_WIDTH)*j/(MESH_WIDTH-1)-(((float)FIELD_WIDTH)/2);
+
 
 			wavyField[i][j][0] = currentHeight; //x
 			wavyField[i][j][1] = currentWidth; //y
@@ -1204,7 +1188,6 @@ void generateNewMesh(){
 				normField[i][j][k] = (norm1[k] + norm2[k] + norm3[k] + norm4[k]) / 4;
 				temp = (norm1[k] + norm2[k] + norm3[k] + norm4[k]) / 4;
 			}
-
 		}
 	}
 
@@ -1569,17 +1552,49 @@ void drawAllObjects(){
 #endif
 				setMaterial(&redAmbientMaterial);
 			drawDot(DRAWN_DOT_SCALE_FACTOR);
-
+/*
 			if (showDotPreimage){
 
 				//				setMaterial(&redAmbientTranslucentMaterial);
 				//				glEnable (GL_BLEND);
-				//				glBlendFunc (GL_SRC_ALPHA, GL_SRC_ALPHA);
+				//				glBlendFunc (GL_SRC_ALPHA, GL_SRC_ALPHA);s
 
 				drawDot(DOT_PREIMAGE_SCALE_FACTOR);
 
 				//				glDisable(GL_BLEND);
 			}
+	*/
 			glEnable(GL_DEPTH_TEST);
 		}
+}
+
+void saveScreenshot(int centerX, int centerY, int width, int height, const char* fileName){
+
+	int xStart = centerX - width/2;
+	int yStart = centerY - height/2;
+
+	int dataSize = width*height*3;
+	GLubyte *pixels = new GLubyte [dataSize];
+	/*
+	int emptyArraySize = 138;
+	char* emptyArray = new char[emptyArraySize];
+	
+	for (int i=0; i < emptyArraySize; i++){
+		emptyArray[i] = '3';
+	}
+	*/
+	glReadPixels(centerX - width/2, centerY - height/2, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+
+	unsigned char TGAheader[12]={0,0,2,0,0,0,0,0,width,height,8,0};
+
+	FILE *fScreenshot = fopen(fileName,"wb");
+
+	fwrite(TGAheader, sizeof(unsigned char), 12, fScreenshot);
+	fwrite(pixels, sizeof(GLubyte), dataSize, fScreenshot);
+	fclose(fScreenshot);
+
+	delete [] pixels;
+
+
+	return;
 }
