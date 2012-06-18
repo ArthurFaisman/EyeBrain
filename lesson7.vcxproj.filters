@@ -62,5 +62,8 @@
     <ClInclude Include="bmp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CImg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -137,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bmp.h" />
+    <ClInclude Include="CImg.h" />
     <ClInclude Include="complex.h" />
     <ClInclude Include="curvatures.h" />
     <ClInclude Include="dataProcess.h" />

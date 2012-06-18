@@ -18,6 +18,8 @@ The following is the note that was included in that code:
 #include <gl\gl.h>			// Header File For The OpenGL32 Library
 #include <gl\glu.h>			// Header File For The GLu32 Library
 
+//#include "CImg.h"
+#include <atlimage.h>
 #include <string.h>
 #include <sstream>
 #include <fftw3.h>
@@ -373,7 +375,7 @@ int DrawGLScene(GLvoid)									// Here's Where We Do All The Drawing
 	int screenshotCenterY = (int) extremaWin_y;
 	std::stringstream ss;
 	ss << screenshotBaseDir;
-	ss << "ss.tga";
+	ss << "ss.bmp";
 	const string tmp = ss.str();
 
 	saveScreenshot(screenshotCenterX, screenshotCenterY, screenshotBoxWidth,screenshotBoxHeight, tmp.c_str());
@@ -1582,8 +1584,8 @@ void saveScreenshot(int centerX, int centerY, int width, int height, const char*
 	int xStart = centerX - width/2;
 	int yStart = centerY - height/2;
 
-	int dataSize = width*height*3;
-	GLubyte *pixels = (GLubyte*) malloc(dataSize*sizeof(GLubyte));//= new GLubyte [dataSize];
+	//int dataSize = width*height*3;
+	//GLubyte *pixels = (GLubyte*) malloc(dataSize*sizeof(GLubyte));//= new GLubyte [dataSize];
 	/*
 	int emptyArraySize = 138;
 	char* emptyArray = new char[emptyArraySize];
@@ -1592,8 +1594,9 @@ void saveScreenshot(int centerX, int centerY, int width, int height, const char*
 		emptyArray[i] = '3';
 	}
 	*/
-	glReadPixels(centerX - width/2, centerY - height/2, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+	//glReadPixels(centerX - width/2, centerY - height/2, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 
+	/*
 	unsigned char TGAheader[12]={0,0,2,0,0,0,0,0,width,height,8,0};
 
 	FILE *fScreenshot = fopen(fileName,"wb");
@@ -1601,8 +1604,25 @@ void saveScreenshot(int centerX, int centerY, int width, int height, const char*
 	fwrite(TGAheader, sizeof(unsigned char), 12, fScreenshot);
 	fwrite(pixels, sizeof(GLubyte), dataSize, fScreenshot);
 	fclose(fScreenshot);
+	*/
 
-	delete [] pixels;
+	GLubyte tmpPixel[3]; // = new GLubyte[3];
+	CImage* resultImage = new CImage();
+	resultImage->Create(width, height, 24);
+
+	for (int i=0; i < width; i ++){
+		for (int j = 0; j < height; j++){
+			glReadPixels(xStart+i, yStart+j, 1,1,GL_RGB, GL_UNSIGNED_BYTE, tmpPixel);
+			//resultImage->SetPixelRGB(i,j,pixels[j*width*3+i*3],pixels[j*width*3+i*3+1],pixels[j*width*3+i*3+2]);
+			resultImage->SetPixelRGB(i,j,tmpPixel[0],tmpPixel[1],tmpPixel[2]);
+		}
+	}
+
+	resultImage->Save(fileName);
+
+	delete resultImage;
+	//free(pixels);
+	//delete [] pixels;
 
 
 	return;
