@@ -17,16 +17,10 @@ The following is the note that was included in that code:
 #include <stdlib.h>
 #include <gl\gl.h>			// Header File For The OpenGL32 Library
 #include <gl\glu.h>			// Header File For The GLu32 Library
+
 #include <string.h>
 #include <sstream>
-//#include "complex.h"
 #include <fftw3.h>
-extern "C"
-{
-//#include "fftn.h"
-//#include "TGA.h"
-//#include "TGAHelper.h"
-}
 #include "bmp.h"
 #include "curvatures.h"
 #include <cmath>
@@ -60,7 +54,7 @@ void LoadGLTextures()								// Load Bitmaps And Convert To Textures
 
 	for (int i = 0; i < NUM_TEXTURES; i++){
 		// TextureImage[i]=LoadBMP((char *)textureFilenames[i].c_str());
-		BYTE *tmp = LoadBMP(&(widths[i]), &(heights[i]),&(sizes[i]),(char *)textureFilenames[i].c_str());
+//		BYTE *tmp = LoadBMP(&(widths[i]), &(heights[i]),&(sizes[i]),(char *)textureFilenames[i].c_str());
 		bmpData[i]=LoadBMP(&(widths[i]), &(heights[i]),&(sizes[i]),(char *)textureFilenames[i].c_str());
 		rgbData[i] = ConvertBMPToRGBBuffer ( bmpData[i], widths[i], heights[i] );
 	}
@@ -122,7 +116,7 @@ GLvoid ReSizeGLScene(GLsizei width, GLsizei height)		// Resize And Initialize Th
 
 int InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 {
-
+//	BYTE* tmp;
 
 	srand( time(NULL));
 
@@ -144,6 +138,9 @@ int InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 
 	numSamplesSoFar = 0;
 
+//	tmp = new BYTE[1000000000];
+//	delete [] tmp;
+
 	//initialize mesh variables:
 	//realPart = new double[MAX_INIT_MESH_SIZE*MAX_INIT_MESH_SIZE];
 	//imPart = new double[MAX_INIT_MESH_SIZE*MAX_INIT_MESH_SIZE];
@@ -164,12 +161,16 @@ int InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 			wavyField[i][j] = new GLfloat[3];
 		}
 	}
+//	tmp = new BYTE[1000000000];
+//	delete [] tmp;
 	for (int i = 0; i < MAX_MESH_HEIGHT; i++){
 		normField[i] = new GLfloat * [MAX_MESH_WIDTH];
 		for (int j=0; j < MAX_MESH_WIDTH; j++){
 			normField[i][j] = new GLfloat[3];
 		}
 	}
+//	tmp = new BYTE[100000000];
+//	delete [] tmp;
 	textureExists = new bool*[MAX_MESH_HEIGHT];
 	textureCoordinates = new GLfloat***[MAX_MESH_HEIGHT];
 	for (int i = 0; i < MAX_MESH_HEIGHT; i++){
@@ -183,6 +184,8 @@ int InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 		}
 	}
 
+//	tmp = new BYTE[1000000];
+//	delete [] tmp;
 
 #if !CURVATURE_DIAGNOSTIC_MODE
 	dotExists = TRUE;
@@ -373,9 +376,9 @@ int DrawGLScene(GLvoid)									// Here's Where We Do All The Drawing
 	ss << "ss.tga";
 	const string tmp = ss.str();
 
-	//saveScreenshot(screenshotCenterX, screenshotCenterY, screenshotBoxWidth,screenshotBoxHeight, tmp.c_str());
+	saveScreenshot(screenshotCenterX, screenshotCenterY, screenshotBoxWidth,screenshotBoxHeight, tmp.c_str());
 	
-	return TRUE;										// Keep Going
+	//return TRUE;										// Keep Going
 }
 
 GLvoid KillGLWindow(GLvoid)								// Properly Kill The Window
@@ -1580,7 +1583,7 @@ void saveScreenshot(int centerX, int centerY, int width, int height, const char*
 	int yStart = centerY - height/2;
 
 	int dataSize = width*height*3;
-	GLubyte *pixels = new GLubyte [dataSize];
+	GLubyte *pixels = (GLubyte*) malloc(dataSize*sizeof(GLubyte));//= new GLubyte [dataSize];
 	/*
 	int emptyArraySize = 138;
 	char* emptyArray = new char[emptyArraySize];
