@@ -370,8 +370,9 @@ BYTE* LoadBMP ( int* width, int* height, long* size, LPCTSTR bmpfile )
 
 	// create buffer to hold the data
 	*size = bmpheader.bfSize - bmpheader.bfOffBits;
+//	BYTE* tmp = new BYTE[200];
 	BYTE* Buffer = new BYTE[ *size ];
-	// move file pointer to start of bitmap data
+	// move file pointer to start of bitmap data1
 	SetFilePointer ( file, bmpheader.bfOffBits, NULL, FILE_BEGIN );
 	// read bmp data
 	if ( ReadFile ( file, Buffer, *size, &bytesread, NULL ) == false )

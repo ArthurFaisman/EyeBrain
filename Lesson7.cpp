@@ -41,12 +41,18 @@ using namespace std;
 
 void LoadGLTextures()								// Load Bitmaps And Convert To Textures
 {
-
+	/*
 	BYTE *bmpData[NUM_TEXTURES];
 	BYTE *rgbData[NUM_TEXTURES];
 	int widths[NUM_TEXTURES];
 	int heights[NUM_TEXTURES];
 	long sizes[NUM_TEXTURES];
+	*/
+	BYTE **bmpData = new BYTE*[NUM_TEXTURES];
+	BYTE **rgbData = new BYTE*[NUM_TEXTURES];
+	int *widths = new int[NUM_TEXTURES];
+	int *heights = new int[NUM_TEXTURES];
+	long *sizes = new long[NUM_TEXTURES];
 
 	//memset(bmpData,0,sizeof(void *)*NUM_TEXTURES);  //memset(TextureImage,0,sizeof(void *)*2);  		         	// Set The Pointer To NULL
 	//memset(rgbData,0,sizeof(void *)*NUM_TEXTURES);
@@ -54,6 +60,7 @@ void LoadGLTextures()								// Load Bitmaps And Convert To Textures
 
 	for (int i = 0; i < NUM_TEXTURES; i++){
 		// TextureImage[i]=LoadBMP((char *)textureFilenames[i].c_str());
+		BYTE *tmp = LoadBMP(&(widths[i]), &(heights[i]),&(sizes[i]),(char *)textureFilenames[i].c_str());
 		bmpData[i]=LoadBMP(&(widths[i]), &(heights[i]),&(sizes[i]),(char *)textureFilenames[i].c_str());
 		rgbData[i] = ConvertBMPToRGBBuffer ( bmpData[i], widths[i], heights[i] );
 	}
@@ -141,7 +148,6 @@ int InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 	//realPart = new double[MAX_INIT_MESH_SIZE*MAX_INIT_MESH_SIZE];
 	//imPart = new double[MAX_INIT_MESH_SIZE*MAX_INIT_MESH_SIZE];
 	fftComplexField = (fftw_complex *) fftw_alloc_complex(MAX_INIT_MESH_SIZE*MAX_INIT_MESH_SIZE);
-	//fftComplexField = (fftw_complex *) alloc_complex(MAX_INIT_MESH_SIZE*MAX_INIT_MESH_SIZE);
 	radiusField = new GLfloat * [MAX_INIT_MESH_SIZE];
 	principalCurvature1Field = new GLfloat * [MAX_INIT_MESH_SIZE];
 	principalCurvature2Field = new GLfloat * [MAX_INIT_MESH_SIZE];
