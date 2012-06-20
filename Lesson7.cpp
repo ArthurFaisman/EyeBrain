@@ -56,7 +56,7 @@ void LoadGLTextures()								// Load Bitmaps And Convert To Textures
 
 	for (int i = 0; i < NUM_TEXTURES; i++){
 		// TextureImage[i]=LoadBMP((char *)textureFilenames[i].c_str());
-//		BYTE *tmp = LoadBMP(&(widths[i]), &(heights[i]),&(sizes[i]),(char *)textureFilenames[i].c_str());
+		//		BYTE *tmp = LoadBMP(&(widths[i]), &(heights[i]),&(sizes[i]),(char *)textureFilenames[i].c_str());
 		bmpData[i]=LoadBMP(&(widths[i]), &(heights[i]),&(sizes[i]),(char *)textureFilenames[i].c_str());
 		rgbData[i] = ConvertBMPToRGBBuffer ( bmpData[i], widths[i], heights[i] );
 	}
@@ -93,12 +93,12 @@ void LoadGLTextures()								// Load Bitmaps And Convert To Textures
 			averageTextureColor[i][j] = (1.0/256)*((double)tempPixel[j]) / ((double)widths[i]*heights[i]);
 		}
 	}
-	
+
 	for (int i=0; i < NUM_TEXTURES; i++){
 		delete [] rgbData[i];
 		delete [] bmpData[i];
 	}
-	
+
 }
 
 GLvoid ReSizeGLScene(GLsizei width, GLsizei height)		// Resize And Initialize The GL Window
@@ -118,8 +118,8 @@ GLvoid ReSizeGLScene(GLsizei width, GLsizei height)		// Resize And Initialize Th
 
 int InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 {
-//	BYTE* tmp;
-
+	//	BYTE* tmp;
+	saveNextImage = true;
 	srand( time(NULL));
 
 	timeOut = false;
@@ -140,8 +140,8 @@ int InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 
 	numSamplesSoFar = 0;
 
-//	tmp = new BYTE[1000000000];
-//	delete [] tmp;
+	//	tmp = new BYTE[1000000000];
+	//	delete [] tmp;
 
 	//initialize mesh variables:
 	//realPart = new double[MAX_INIT_MESH_SIZE*MAX_INIT_MESH_SIZE];
@@ -163,16 +163,16 @@ int InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 			wavyField[i][j] = new GLfloat[3];
 		}
 	}
-//	tmp = new BYTE[1000000000];
-//	delete [] tmp;
+	//	tmp = new BYTE[1000000000];
+	//	delete [] tmp;
 	for (int i = 0; i < MAX_MESH_HEIGHT; i++){
 		normField[i] = new GLfloat * [MAX_MESH_WIDTH];
 		for (int j=0; j < MAX_MESH_WIDTH; j++){
 			normField[i][j] = new GLfloat[3];
 		}
 	}
-//	tmp = new BYTE[100000000];
-//	delete [] tmp;
+	//	tmp = new BYTE[100000000];
+	//	delete [] tmp;
 	textureExists = new bool*[MAX_MESH_HEIGHT];
 	textureCoordinates = new GLfloat***[MAX_MESH_HEIGHT];
 	for (int i = 0; i < MAX_MESH_HEIGHT; i++){
@@ -186,8 +186,8 @@ int InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 		}
 	}
 
-//	tmp = new BYTE[1000000];
-//	delete [] tmp;
+	//	tmp = new BYTE[1000000];
+	//	delete [] tmp;
 
 #if !CURVATURE_DIAGNOSTIC_MODE
 	dotExists = TRUE;
@@ -214,7 +214,7 @@ int InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 	wobble = WOBBLE;
 	mirror = USE_MIRROR;
 	amplitude = AMPLITUDE;
-	hill =  (bool)(rand()%2);
+//	hill =  (bool)(rand()%2);
 	specularOnly = SPECULAR_ONLY;
 	shininess = SHININESS;
 	diffuseOnly = DIFFUSE_ONLY;
@@ -277,7 +277,7 @@ int InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 int DrawGLScene(GLvoid)									// Here's Where We Do All The Drawing
 {
 
-//	double currentTime = getSecondsSinceProgramStart();
+	//	double currentTime = getSecondsSinceProgramStart();
 
 	if (clickAllowed && getSecondsSinceProgramStart() - displayImageStartTime > SUBJECT_TIME_LIMIT && RESEARCH_SUBJECT_TEST_MODE){
 		clickAllowed = false;
@@ -289,13 +289,13 @@ int DrawGLScene(GLvoid)									// Here's Where We Do All The Drawing
 	// set the clear color. This will only be used if the screen is blank because otherwise the background color
 	// will be reset to black before drawing the model
 #if GIVE_FEEDBACK
-/*	if(lastAnswerCorrect)
-		glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
+	/*	if(lastAnswerCorrect)
+	glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
 	else if (lastAnswerIncorrect)
-		glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+	glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
 	else
-		glClearColor(0.7f, 0.7f, 0.7f, 0.7f);
-		*/
+	glClearColor(0.7f, 0.7f, 0.7f, 0.7f);
+	*/
 	if (timeOut)
 		glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
 	else
@@ -319,6 +319,7 @@ int DrawGLScene(GLvoid)									// Here's Where We Do All The Drawing
 		computeMeshAtNextScreenRefresh = false;
 #if RESEARCH_SUBJECT_TEST_MODE
 		updateTestConditions();
+		
 #else
 		numSamplesSoFar++;
 		bindEnvironment();
@@ -326,6 +327,7 @@ int DrawGLScene(GLvoid)									// Here's Where We Do All The Drawing
 		generateNewMesh();
 		pickNewDotLocation();
 #endif
+		
 	}
 
 
@@ -335,6 +337,7 @@ int DrawGLScene(GLvoid)									// Here's Where We Do All The Drawing
 
 		if (getSecondsSinceProgramStart() - screenBlankStartTime > BLANK_SCREEN_TIME && !computingNextMesh){
 
+			saveNextImage = true;
 			screenBlank = false;
 			timeOut = false;
 			showDotPreimage = true;
@@ -342,7 +345,6 @@ int DrawGLScene(GLvoid)									// Here's Where We Do All The Drawing
 		}
 
 	} else{
-
 
 
 		if (showDotPreimage && getSecondsSinceProgramStart() - timeAtWhichDotPreimageAppeared > DOT_PREIMAGE_TIME){
@@ -369,18 +371,55 @@ int DrawGLScene(GLvoid)									// Here's Where We Do All The Drawing
 		xrot+=xspeed;
 		zrot+=zspeed;
 
-	}
-	
-	int screenshotCenterX = (int) extremaWin_x;
-	int screenshotCenterY = (int) extremaWin_y;
-	std::stringstream ss;
-	ss << screenshotBaseDir;
-	ss << "ss.bmp";
-	const string tmp = ss.str();
+		if (saveNextImage){
+			int screenshotCenterX = (int) extremaWin_x;
+			int screenshotCenterY = (int) extremaWin_y;
+			std::stringstream ss;
+			ss << screenshotBaseDir;
+			if (mirror){
+				ss << "mirror_";
+				ss << currentEnvironmentTextureIndex;
+				ss << "_";
+			}
+			else if (diffuseOnly) ss << "diffuse_";
+			else if (specularOnly) ss << "spec_";
+			else if (textured) ss << "texture_";
+			else ss << "diffSpec_";
 
-	saveScreenshot(screenshotCenterX, screenshotCenterY, screenshotBoxWidth,screenshotBoxHeight, tmp.c_str());
-	
-	//return TRUE;										// Keep Going
+			if (hill) ss << "h_";
+			else ss << "v_";
+
+			ss << imageCounter;
+			ss << ".bmp";
+			const string tmp = ss.str();
+
+			saveScreenshot(screenshotCenterX, screenshotCenterY, screenshotBoxWidth,screenshotBoxHeight, tmp.c_str());
+
+			if (!firstImageSkipped) firstImageSkipped = true;
+			else imageCounter++;
+
+			saveNextImage = false;
+			computeMeshAfterNextScreenRefresh = true;
+
+			if (imageCounter == NUM_SAMPLES){
+				if (mirror && currentEnvironmentTextureIndex < NUM_TEXTURES - 1){
+					currentEnvironmentTextureIndex++;
+					imageCounter = 0;
+				}else{
+					if (hill){
+						hill = false;
+						currentEnvironmentTextureIndex = 0;
+						imageCounter = 0;
+					}else
+						exit(0);
+				}
+			}
+		}
+
+	}
+
+
+	return TRUE;										// Keep Going
 }
 
 GLvoid KillGLWindow(GLvoid)								// Properly Kill The Window
@@ -804,6 +843,8 @@ void drawDot(GLfloat dotScaleFactor){
 		wavyField[dotMeshCoordinates[0]][dotMeshCoordinates[1]][2]);
 
 	glScalef(dotScaleFactor, dotScaleFactor, dotScaleFactor);
+
+	// comment out the next line to not actually draw a dot
 	drawSphere(200);
 
 	// get on-screen coordinates
@@ -818,8 +859,8 @@ void drawDot(GLfloat dotScaleFactor){
 	glGetIntegerv(GL_VIEWPORT, viewport);
 
 	gluProject(0.0,0.0,0.0,
-				model_view, projection, viewport,
-				&extremaWin_x, &extremaWin_y, &extremaWin_z);
+		model_view, projection, viewport,
+		&extremaWin_x, &extremaWin_y, &extremaWin_z);
 
 
 
@@ -899,7 +940,7 @@ void processKeyPress(char key){
 		//	actualDots[numSamplesSoFar - 1] = hill;
 		testConditionsTried[currentTestConditionCombinationIndex]++;
 
-		writeRecentDataToFile(OUTPUT_FILE_NAME, pickedDots[numSamplesSoFar -1],  pickedTestConditionIndices[numSamplesSoFar - 1], getSecondsSinceProgramStart() - timeAtWhichDotPreimageAppeared - DOT_PREIMAGE_TIME);
+//		writeRecentDataToFile(OUTPUT_FILE_NAME, pickedDots[numSamplesSoFar -1],  pickedTestConditionIndices[numSamplesSoFar - 1], getSecondsSinceProgramStart() - timeAtWhichDotPreimageAppeared - DOT_PREIMAGE_TIME);
 
 	}
 
@@ -910,7 +951,7 @@ void processKeyPress(char key){
 
 #else // not RESEARCH_SUBJECT_TEST_MODE
 	numSamplesSoFar++;
-	hill =  (bool)(rand()%2);
+//	hill =  (bool)(rand()%2);
 	bindEnvironment();
 
 	setBlankScreen();
@@ -949,66 +990,6 @@ void drawSphere(int roughNumSides) {
 	}
 }
 
-void drawCylinder(int numSides){
-
-	double currentAngle = 0.0;
-	GLfloat currentX;
-	GLfloat currentY;
-
-
-	glShadeModel(GL_SMOOTH);
-	glBegin(GL_QUAD_STRIP);
-
-	double angleDelta = 2*PI / numSides;
-
-	currentX = cos(currentAngle);
-	currentY = sin(currentAngle);
-	glNormal3f(currentX, currentY,0.0f);
-	glVertex3f(currentX, currentY,0.5f);
-	glNormal3f(currentX, currentY,0.0f);
-	glVertex3f(currentX, currentY,-0.5f);	
-
-	for (int i=0; i < numSides; i++){
-		currentAngle += angleDelta;
-		currentX = cos(currentAngle);
-		currentY = sin(currentAngle);
-
-		glNormal3f(currentX, currentY,0.0f);
-		glVertex3f(currentX, currentY,0.5f);
-		glNormal3f(currentX, currentY,0.0f);
-		glVertex3f(currentX, currentY,-0.5f);
-
-	}
-	glEnd();
-
-	glShadeModel(GL_FLAT);
-	glBegin(GL_TRIANGLE_FAN);
-	glNormal3f(0.0f, 0.0f,1.0f);
-	glVertex3f(0.0f, 0.0f,0.5f);
-	currentAngle = 0.0;
-	for (int i=0; i < numSides+1; i++){
-		currentX = cos(currentAngle);
-		currentY = sin(currentAngle);
-		glVertex3f(currentX, currentY,0.5f);
-		currentAngle += angleDelta;
-	}
-	glVertex3f(0.0f, 0.0f,0.5f);
-	glEnd();
-
-	glBegin(GL_TRIANGLE_FAN);
-	glNormal3f(0.0f, 0.0f, -1.0f);
-	glVertex3f(0.0f, 0.0f, -0.5f);
-	currentAngle = 0.0;
-	for (int i=0; i < numSides+1; i++){
-		currentX = cos(currentAngle);
-		currentY = sin(currentAngle);
-		glVertex3f(currentX, currentY, -0.5f);
-		currentAngle += angleDelta;
-	}
-	glVertex3f(0.0f, 0.0f, -0.5f);
-	glEnd();
-}
-
 
 void generateNewMesh(){
 
@@ -1018,13 +999,13 @@ void generateNewMesh(){
 	for (int i = 0; i < INIT_MESH_SIZE*INIT_MESH_SIZE; i++){
 		fftComplexField[i][0] = ((double)rand())/RAND_MAX - 0.5;
 		fftComplexField[i][1] = 0.0;
-//		realPart[i] = ((double)rand())/RAND_MAX - 0.5;   //  Between -.5 and .5 with mean 0.
-//		imPart[i] = 0.0;
+		//		realPart[i] = ((double)rand())/RAND_MAX - 0.5;   //  Between -.5 and .5 with mean 0.
+		//		imPart[i] = 0.0;
 	}
 
 	fftw_plan fftPlan = fftw_plan_dft_2d(INIT_MESH_SIZE, INIT_MESH_SIZE, fftComplexField, fftComplexField, FFTW_FORWARD, FFTW_ESTIMATE);
 	fftw_execute(fftPlan);
-//	fftn(2, dims, realPart, imPart, -1, 1.0 * INIT_MESH_SIZE);
+	//	fftn(2, dims, realPart, imPart, -1, 1.0 * INIT_MESH_SIZE);
 
 	for (int i = 0; i < INIT_MESH_SIZE; i++){
 		for (int j = 0; j < INIT_MESH_SIZE; j++){
@@ -1040,12 +1021,12 @@ void generateNewMesh(){
 			else fftComplexField[i*INIT_MESH_SIZE+j][1] = 0;
 		}
 	}
-	
+
 	fftw_destroy_plan(fftPlan);
 	//destroy_plan(fftPlan);
 	fftPlan = fftw_plan_dft_2d(INIT_MESH_SIZE, INIT_MESH_SIZE, fftComplexField, fftComplexField, FFTW_BACKWARD, FFTW_ESTIMATE);
 	fftw_execute(fftPlan);
-//	fftn(2, dims, realPart, imPart, 1, 1.0 * INIT_MESH_SIZE);
+	//	fftn(2, dims, realPart, imPart, 1, 1.0 * INIT_MESH_SIZE);
 
 
 	double sumsquare = 0.0;
@@ -1053,14 +1034,14 @@ void generateNewMesh(){
 	for (int i = 0; i < INIT_MESH_SIZE; i++)
 		for (int j = 0; j < INIT_MESH_SIZE; j++)
 			sumsquare +=  fftComplexField[i*INIT_MESH_SIZE+j][0] * fftComplexField[i*INIT_MESH_SIZE+j][0];
-//			sumsquare +=  realPart[i*INIT_MESH_SIZE+j] * realPart[i*INIT_MESH_SIZE+j];
+	//			sumsquare +=  realPart[i*INIT_MESH_SIZE+j] * realPart[i*INIT_MESH_SIZE+j];
 
 	for (int i = 0; i < INIT_MESH_SIZE; i++)
 		for (int j = 0; j < INIT_MESH_SIZE; j++)
 			radiusField[i][j] = (GLfloat) fftComplexField[i*INIT_MESH_SIZE+j][0] / 
 			( sqrt(sumsquare)/INIT_MESH_SIZE ) * (amplitude?HIGH_AMPLITUDE:LOW_AMPLITUDE); 
-//			radiusField[i][j] = (GLfloat) realPart[i*INIT_MESH_SIZE+j] / 
-//			( sqrt(sumsquare)/INIT_MESH_SIZE ) * (amplitude?HIGH_AMPLITUDE:LOW_AMPLITUDE); 
+	//			radiusField[i][j] = (GLfloat) realPart[i*INIT_MESH_SIZE+j] / 
+	//			( sqrt(sumsquare)/INIT_MESH_SIZE ) * (amplitude?HIGH_AMPLITUDE:LOW_AMPLITUDE); 
 
 	fftw_destroy_plan(fftPlan);
 
@@ -1258,7 +1239,7 @@ void setModelLocation(){
 void setPerspective(){
 
 
-//	double point3;
+	//	double point3;
 	double subjectPositionXInPixels = viewportWidth/2;
 	double subjectPositionYInPixels = viewportHeight/2;
 
@@ -1305,7 +1286,7 @@ double getSecondsSinceProgramStart(){
 
 void bindEnvironment(){
 
-	currentEnvironmentTextureIndex = (int) (rand() % NUM_TEXTURES);
+//	currentEnvironmentTextureIndex = USED_TEXTURE_INDEX;
 	glBindTexture(GL_TEXTURE_2D, texture[currentEnvironmentTextureIndex]);
 
 }
@@ -1507,76 +1488,76 @@ void setTexture(){
 
 void drawAllObjects(){
 	glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
-		glLoadIdentity();									// Reset The Modelview Matrix
+	glLoadIdentity();									// Reset The Modelview Matrix
 
-		if (lightPosition)
-			glLightfv(GL_LIGHT0, GL_POSITION, lightPositionTop);
-		else
-			glLightfv(GL_LIGHT0, GL_POSITION, lightPositionBottom);
+	if (lightPosition)
+		glLightfv(GL_LIGHT0, GL_POSITION, lightPositionTop);
+	else
+		glLightfv(GL_LIGHT0, GL_POSITION, lightPositionBottom);
 
-		if (mirror){
-			glEnable(GL_TEXTURE_GEN_S);							
-			glEnable(GL_TEXTURE_GEN_T);
-			glEnable(GL_TEXTURE_2D);
-		}
+	if (mirror){
+		glEnable(GL_TEXTURE_GEN_S);							
+		glEnable(GL_TEXTURE_GEN_T);
+		glEnable(GL_TEXTURE_2D);
+	}
 
-		setModelLocation();
+	setModelLocation();
 
 
 
-		if (mirror || textured){
-			// to get rid of shading effects when we use a mirror, we simply use a white ambient texture
-			setMaterial(&whiteAmbientMaterial);
+	if (mirror || textured){
+		// to get rid of shading effects when we use a mirror, we simply use a white ambient texture
+		setMaterial(&whiteAmbientMaterial);
+	} else {
+		if (diffuseOnly){
+			setMaterial(&diffuseMaterial);
 		} else {
-			if (diffuseOnly){
-				setMaterial(&diffuseMaterial);
-			} else {
-				if (specularOnly && shininess){
-					setMaterial(&specularWideMaterial);
+			if (specularOnly && shininess){
+				setMaterial(&specularWideMaterial);
 
-				} else if (specularOnly && !shininess){
-					setMaterial(&specularTightMaterial);
+			} else if (specularOnly && !shininess){
+				setMaterial(&specularTightMaterial);
 
-				} else if (!specularOnly && shininess){
-					setMaterial(&phongWideMaterial);
+			} else if (!specularOnly && shininess){
+				setMaterial(&phongWideMaterial);
 
-				} else if (!specularOnly && !shininess){
-					setMaterial(&phongTightMaterial);
-				}
+			} else if (!specularOnly && !shininess){
+				setMaterial(&phongTightMaterial);
 			}
 		}
-		//	setMaterial(&whiteDiffuseMaterial);
+	}
+	//	setMaterial(&whiteDiffuseMaterial);
 
-		drawWavyField();
-		//	drawSphere(1000);
+	drawWavyField();
+	//	drawSphere(1000);
 
-		if (dotExists){
-			glDisable(GL_DEPTH_TEST);
-			//		if (mirror){
-			glDisable(GL_TEXTURE_GEN_S);							
-			glDisable(GL_TEXTURE_GEN_T);
-			glDisable(GL_TEXTURE_2D);
-			//		}
+	if (dotExists){
+		glDisable(GL_DEPTH_TEST);
+		//		if (mirror){
+		glDisable(GL_TEXTURE_GEN_S);							
+		glDisable(GL_TEXTURE_GEN_T);
+		glDisable(GL_TEXTURE_2D);
+		//		}
 #if COLOR_MIN_BLUE
-			if (!hill) setMaterial(&blueAmbientMaterial);
-			else
+		if (!hill) setMaterial(&blueAmbientMaterial);
+		else
 #endif
-				setMaterial(&redAmbientMaterial);
-			drawDot(DRAWN_DOT_SCALE_FACTOR);
-/*
-			if (showDotPreimage){
+			setMaterial(&redAmbientMaterial);
+		drawDot(DRAWN_DOT_SCALE_FACTOR);
+		/*
+		if (showDotPreimage){
 
-				//				setMaterial(&redAmbientTranslucentMaterial);
-				//				glEnable (GL_BLEND);
-				//				glBlendFunc (GL_SRC_ALPHA, GL_SRC_ALPHA);s
+		//				setMaterial(&redAmbientTranslucentMaterial);
+		//				glEnable (GL_BLEND);
+		//				glBlendFunc (GL_SRC_ALPHA, GL_SRC_ALPHA);s
 
-				drawDot(DOT_PREIMAGE_SCALE_FACTOR);
+		drawDot(DOT_PREIMAGE_SCALE_FACTOR);
 
-				//				glDisable(GL_BLEND);
-			}
-	*/
-			glEnable(GL_DEPTH_TEST);
+		//				glDisable(GL_BLEND);
 		}
+		*/
+		glEnable(GL_DEPTH_TEST);
+	}
 }
 
 void saveScreenshot(int centerX, int centerY, int width, int height, const char* fileName){
@@ -1589,9 +1570,9 @@ void saveScreenshot(int centerX, int centerY, int width, int height, const char*
 	/*
 	int emptyArraySize = 138;
 	char* emptyArray = new char[emptyArraySize];
-	
+
 	for (int i=0; i < emptyArraySize; i++){
-		emptyArray[i] = '3';
+	emptyArray[i] = '3';
 	}
 	*/
 	//glReadPixels(centerX - width/2, centerY - height/2, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
@@ -1614,7 +1595,7 @@ void saveScreenshot(int centerX, int centerY, int width, int height, const char*
 		for (int j = 0; j < height; j++){
 			glReadPixels(xStart+i, yStart+j, 1,1,GL_RGB, GL_UNSIGNED_BYTE, tmpPixel);
 			//resultImage->SetPixelRGB(i,j,pixels[j*width*3+i*3],pixels[j*width*3+i*3+1],pixels[j*width*3+i*3+2]);
-			resultImage->SetPixelRGB(i,j,tmpPixel[0],tmpPixel[1],tmpPixel[2]);
+			resultImage->SetPixelRGB(width - 1 - i, height - 1 - j,tmpPixel[0],tmpPixel[1],tmpPixel[2]);
 		}
 	}
 

@@ -18,19 +18,27 @@ The following is the note that was included in that code:
 
 #define OUTPUT_FILE_NAME "data\\data.txt"
 
-
-// the following constants are only used when the conditions are not randomized aka when RESEARCH_SUBJECT_TEST_MODE = FALSE
-#define USE_MIRROR true
-#define DIFFUSE_ONLY false
-
 #define WOBBLE false
 #define AMPLITUDE true // false denotes lower amplitude, true denotes higher amplitude
-#define SLANT true // true denotes a slant with the top further away from the viewer, whereas false denotes the opposite (both of angle SLANT_ANGLE)
-#define SPECULAR_ONLY true
 #define SHININESS false // true is wide, false is narrow
-#define TEXTURED false
 #define LIGHT_POSITION true
-// true is above the horizontal plane, false is below
+#define SLANT true // true denotes a slant with the top further away from the viewer, whereas false denotes the opposite (both of angle SLANT_ANGLE)
+int imageCounter = 0;
+#define NUM_SAMPLES 300
+bool hill = true; // start with true, it auto switches to false as well
+int currentEnvironmentTextureIndex = 0; // auto switches if mirror
+bool firstImageSkipped = false;
+
+int screenshotBoxWidth = 200;
+int screenshotBoxHeight = 200;
+
+//CHANGE THESE
+#define USE_MIRROR false
+//#define USED_TEXTURE_INDEX 0 //ranges from 0 to 4 = NUM_TEXTURES - 1
+#define DIFFUSE_ONLY false
+#define SPECULAR_ONLY false
+#define TEXTURED false
+//CHANGE THOSE ABOVE
 
 
 #define FIND_SD_HEIGHT_FIELD FALSE
@@ -56,7 +64,7 @@ The following is the note that was included in that code:
 #define ALLOW_SPECULAR_TOGGLE FALSE
 
 #define SUBJECT_TIME_LIMIT 3.5
-#define TIMES_TO_TEST_EACH_CONDITION 5
+#define TIMES_TO_TEST_EACH_CONDITION 2
 
 // wobble params
 bool wobble;
@@ -178,13 +186,11 @@ GLfloat lightPositionBottom[] = {0.0, -tan((float)LIGHT_POSITION_ANGLE*PI/180), 
 
 GLuint	filter;				// Which Filter To Use
 
-bool hill; // current value of hill: true is hill, false is valley
 bool * pickedDots; // false corresponds to subject choosing valley, true is hill
 int * pickedTestConditionIndices;
 
 LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);	// Declaration For WndProc
 
-void drawCylinder(int numSides);
 void drawSphere(int roughNumSides);
 void drawWavyField();
 void drawDot(GLfloat dotScaleFactor);
@@ -212,7 +218,6 @@ bool dotExists;
 int mouseX;
 int mouseY;
 int numSamplesSoFar;
-int currentEnvironmentTextureIndex;
 
 
 typedef struct materialStruct{
@@ -349,7 +354,7 @@ GLfloat averageTextureColor[NUM_TEXTURES][3];
 
 // minimum time that the screen is coloured a neutral color in between tests
 // minimum because it might take longer to actually compute the mesh
-#define BLANK_SCREEN_TIME 2.0 
+#define BLANK_SCREEN_TIME 0.0 //2.0 
 void setBlankScreen();
 void drawBlankScreen();
 bool screenBlank;
@@ -370,6 +375,5 @@ bool computingNextMesh; // if true, the next mesh has not yet been computed (don
 // used for storing the value of the window coordinates of a dot location
 void saveScreenshot(int centerX, int centerY, int width, int height, const char* fileName);
 GLdouble extremaWin_x, extremaWin_y, extremaWin_z;
-int screenshotBoxWidth = 30;// 6;
-int screenshotBoxHeight = 60; //15;
 const char screenshotBaseDir[] = "C:\\Users\\Arthur\\Dropbox\\psychophysics\\EyeBrain\\Data\\screenshots\\";
+bool saveNextImage;

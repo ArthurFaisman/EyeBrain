@@ -63,7 +63,11 @@ void setTestConditions(int testConditionIndex, bool * hill, bool* slant, bool* w
 
 bool validTestConditions(bool hill, bool slant, bool wobble, bool mirror, bool amplitude, bool specularOnly, bool shininess, bool diffuseOnly, bool textured, bool lightPosition){
 
-	return  amplitude && !shininess && !textured && (slant == lightPosition) && ((mirror && !specularOnly && !diffuseOnly) || (!mirror &&  ((diffuseOnly && !specularOnly) || (!diffuseOnly && specularOnly) || (!diffuseOnly && !specularOnly)))); //(!diffuseOnly || !specularOnly)));
+//	hill, slant, wobble, mirror, amplitude, specularOnly, shininess, diffuseOnly, textured, lightPosition
+
+
+	return  amplitude && !shininess && !textured && slant && lightPosition && 
+		((mirror && !specularOnly && !diffuseOnly) || (!mirror &&  ((diffuseOnly && !specularOnly) || (!diffuseOnly && specularOnly) || (!diffuseOnly && !specularOnly)))); //(!diffuseOnly || !specularOnly)));
 	
 	/*
 	return  ((lightPosition && slant && amplitude && lightPosition) && ((diffuseOnly && !shininess && !specularOnly && !textured && !mirror) || (!diffuseOnly && !textured && !mirror) || 
