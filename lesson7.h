@@ -24,27 +24,27 @@ The following is the note that was included in that code:
 #define LIGHT_POSITION true
 #define SLANT true // true denotes a slant with the top further away from the viewer, whereas false denotes the opposite (both of angle SLANT_ANGLE)
 int imageCounter = 0;
-#define NUM_SAMPLES 300
+#define NUM_SAMPLES 100
 bool hill = true; // start with true, it auto switches to false as well
 int currentEnvironmentTextureIndex = 0; // auto switches if mirror
 bool firstImageSkipped = false;
 
-int screenshotBoxWidth = 200;
-int screenshotBoxHeight = 200;
+int screenshotBoxWidth = 256;
+int screenshotBoxHeight = 256;
 
-//CHANGE THESE
-#define USE_MIRROR false
+//START WITH USE_MIRROR=TRUE
+#define USE_MIRROR true
 //#define USED_TEXTURE_INDEX 0 //ranges from 0 to 4 = NUM_TEXTURES - 1
 #define DIFFUSE_ONLY false
 #define SPECULAR_ONLY false
 #define TEXTURED false
-//CHANGE THOSE ABOVE
+
 
 
 #define FIND_SD_HEIGHT_FIELD FALSE
 
 
-#define HIGH_AMPLITUDE 0.105              //  These are the possible standard deviations of the height field.
+#define HIGH_AMPLITUDE 0.3 //0.105              //  These are the possible standard deviations of the height field.
 #define LOW_AMPLITUDE 0.05
 
 
@@ -55,8 +55,8 @@ int screenshotBoxHeight = 200;
 #define SLANT_ANGLE 30.0
 
 // the field dimensions are in GL units
-#define FIELD_WIDTH 8.5
-#define FIELD_HEIGHT 8.5
+#define FIELD_WIDTH 10 //8.5
+#define FIELD_HEIGHT 10 //8.5
 #define PI 3.14159265358979323846
 
 #define CURVATURE_DIAGNOSTIC_MODE FALSE
@@ -74,8 +74,8 @@ double startTime;
 double getSecondsSinceProgramStart();
 void startWobble();
 
-#define MESH_WIDTH   350    //((int)(200*(mirror?1:1.5))) // make sure to update the variable below accordingly!!!
-#define MAX_MESH_WIDTH 350      //((int)(300*1.5)) // for use in initialization of arrays	
+#define MESH_WIDTH   380//350    //((int)(200*(mirror?1:1.5))) // make sure to update the variable below accordingly!!!
+#define MAX_MESH_WIDTH 380//350      //((int)(300*1.5)) // for use in initialization of arrays	
 #define MESH_HEIGHT  ((int)(MESH_WIDTH*(((double)FIELD_HEIGHT)/FIELD_WIDTH))) // mesh density auto scales to the chosen field dimensions
 #define MAX_MESH_HEIGHT  ((int)(MAX_MESH_WIDTH*(((double)FIELD_HEIGHT)/FIELD_WIDTH)))
 
@@ -100,13 +100,13 @@ GLfloat meshPlaneNormal[3];
 
 #define INIT_MESH_SIZE max( MESH_WIDTH, MESH_HEIGHT) // the dimensions of the square array used in FFT, UPDATE THE VARIABLE BELOW IF YOU CHANGE THIS
 #define MAX_INIT_MESH_SIZE max( MAX_MESH_WIDTH, MAX_MESH_HEIGHT) // for use in array initialization
-#define KMIN      5                 //  KMIN cycles per MESH_WIDTH.
+#define KMIN      2 //5                 //  KMIN cycles per MESH_WIDTH.
 #define KMIN2     (KMIN*KMIN)      //  Frequency squared.  i.e.  sqrt(KMAX2) cycles per MESH_WIDTH.
-#define KMAX      9.5                //  KMAX cycles per MESH_WIDTH.
+#define KMAX      5 //9.5                //  KMAX cycles per MESH_WIDTH.
 #define KMAX2     (KMAX*KMAX)      //  Frequency squared.  i.e.  sqrt(KMAX2) cycles per MESH_WIDTH
 
 #define DEFAULT_FULLSCREEN_CHOICE false
-#define PRESENT_FULLSCREEN_CHOICE FALSE
+#define PRESENT_FULLSCREEN_CHOICE FALSEs
 #define SHOW_CURSOR_ON_FULLSCREEN true
 #define VIEWPOINT_REAL_DISTANCE_TO_SCREEN 21 //30 // the face is set to be this many inches away from the computer screen with respect to viewpoint
 #define VIEWPOINT_OLD_DISTANCE_TO_SCREEN 21 //30 // used to set up the scaling for this experiment as proportional to the previous one
@@ -375,5 +375,6 @@ bool computingNextMesh; // if true, the next mesh has not yet been computed (don
 // used for storing the value of the window coordinates of a dot location
 void saveScreenshot(int centerX, int centerY, int width, int height, const char* fileName);
 GLdouble extremaWin_x, extremaWin_y, extremaWin_z;
-const char screenshotBaseDir[] = "C:\\Users\\Arthur\\Dropbox\\psychophysics\\EyeBrain\\Data\\screenshots\\";
+const char screenshotBaseDir[] = "C:\\Users\\Arthur\\Documents\\MATLAB\\psychophysics\\screenshots_freq\\";
 bool saveNextImage;
+#define DOT_SEARCH_TIMEOUT_IN_SECONDS 10

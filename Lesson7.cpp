@@ -405,10 +405,26 @@ int DrawGLScene(GLvoid)									// Here's Where We Do All The Drawing
 				if (mirror && currentEnvironmentTextureIndex < NUM_TEXTURES - 1){
 					currentEnvironmentTextureIndex++;
 					imageCounter = 0;
+				}else if (mirror && currentEnvironmentTextureIndex == NUM_TEXTURES - 1){
+					mirror = false;
+					specularOnly = true;
+					imageCounter = 0;
+				}else if (specularOnly == true){
+					specularOnly = false;
+					diffuseOnly = true;
+					imageCounter = 0;
+				}else if(diffuseOnly == true){
+					diffuseOnly = false;
+					textured = true;
+					imageCounter = 0;
+				} else if (textured == true){
+					textured = false;
+					imageCounter = 0;
 				}else{
 					if (hill){
 						hill = false;
 						currentEnvironmentTextureIndex = 0;
+						mirror = true;
 						imageCounter = 0;
 					}else
 						exit(0);
@@ -845,7 +861,7 @@ void drawDot(GLfloat dotScaleFactor){
 	glScalef(dotScaleFactor, dotScaleFactor, dotScaleFactor);
 
 	// comment out the next line to not actually draw a dot
-	drawSphere(200);
+	//drawSphere(200);
 
 	// get on-screen coordinates
 
@@ -880,12 +896,30 @@ void pickNewDotLocation(){
 	widthBoundMin = MIN_DISTANCE_FROM_DOT_TO_EDGE;
 	widthBoundMax = MESH_WIDTH - MIN_DISTANCE_FROM_DOT_TO_EDGE;
 
+	int startTime = getSecondsSinceProgramStart();
+	int checkTimeCounter = 0;
 
 	bool foundGoodDot = false;
 
 
 	// note: the hills and valleys are inverted with respect to the mesh when the field is concave
 	while (!foundGoodDot){
+
+		checkTimeCounter++;
+
+		if (checkTimeCounter > 1000){
+			checkTimeCounter =0;
+			int currTime = getSecondsSinceProgramStart();
+
+			if (currTime - startTime > DOT_SEARCH_TIMEOUT_IN_SECONDS){
+				computingNextMesh = true;
+				generateNewMesh();
+				pickNewDotLocation();
+
+				computingNextMesh = false;
+				return;
+			}
+		}
 
 		dotMeshCoordinates[0] = heightBoundMin + (rand() % (heightBoundMax - heightBoundMin));
 		dotMeshCoordinates[1] = widthBoundMin + (rand() % (widthBoundMax - widthBoundMin));
@@ -1543,6 +1577,7 @@ void drawAllObjects(){
 		else
 #endif
 			setMaterial(&redAmbientMaterial);
+
 		drawDot(DRAWN_DOT_SCALE_FACTOR);
 		/*
 		if (showDotPreimage){
