@@ -15,41 +15,76 @@ The following is the note that was included in that code:
 
 
 
-#define RESEARCH_SUBJECT_TEST_MODE TRUE
+#define RESEARCH_SUBJECT_TEST_MODE FALSE
 
 #define OUTPUT_FILE_NAME "data\\data.txt"
 
-
 // the following constants are only used when the conditions are not randomized aka when RESEARCH_SUBJECT_TEST_MODE = FALSE
 #define USE_MIRROR true
+#define TEXTURED false
 #define DIFFUSE_ONLY false
+
+#define COMPRESSION_MULTIPLIER 1.0
+#define COMPRESSION_MULTIPLIER_1D 0.1
+
+#define USE_RANDOMIZED_MESH FALSE
+#define USE_SINE_SURFACE FALSE
+#define USE_1D_FUNCTION TRUE
+
+#define INTEGRATE_SURFACE TRUE
+#define PROJECT_POLAR TRUE
+
+// list of usable image filenames
+#define NUM_TEXTURES 1
+GLuint	texture[NUM_TEXTURES];
+std::string textureFilenames [NUM_TEXTURES] = {
+//	"C:\\Users\\Arthur\\Documents\\MATLAB\\psychophysics\\screenshot_classifier\\pythonCode\\output\\environmentMap_8.bmp"};
+	"textures\\stone_wall_texture_A270663.bmp"};
+
+#define ROTATE_VERTICALLY TRUE
+
+#define KMIN     2                //  KMIN cycles per MESH_WIDTH.
+#define KMAX     7                //  KMAX cycles per MESH_WIDTH.
 
 #define WOBBLE false
 #define AMPLITUDE true // false denotes lower amplitude, true denotes higher amplitude
 #define SLANT true // true denotes a slant with the top further away from the viewer, whereas false denotes the opposite (both of angle SLANT_ANGLE)
-#define SPECULAR_ONLY true
-#define SHININESS false // true is wide, false is narrow
-#define TEXTURED false
+#define SPECULAR_ONLY false
+#define SHININESS false // true is wide, false is narro
 #define LIGHT_POSITION true
 // true is above the horizontal plane, false is below
 
 
 #define FIND_SD_HEIGHT_FIELD FALSE
 
-
-#define HIGH_AMPLITUDE 0.105              //  These are the possible standard deviations of the height field.
+#define HIGH_AMPLITUDE 0.5              //  These are the possible standard deviations of the height field.
 #define LOW_AMPLITUDE 0.05
 
 
 // the deviation of the light source from the horizontal in degrees, positive corresponds to vertical
-#define LIGHT_POSITION_ANGLE 40.0
+#define LIGHT_POSITION_ANGLE 0.0//40.0
 // the deviation of the wavy field from vertical in degrees, the sign is determined by the current value of the boolean slant (so SLANT_ANGLE is positive)
 #define SLANT_ANGLE 30.0
+#define USE_SLANT_DEPENDENT_OFFSET FALSE
 
 // the field dimensions are in GL units
 #define FIELD_WIDTH 8.5
 #define FIELD_HEIGHT 8.5
 #define PI 3.14159265358979323846
+
+#define MESH_WIDTH   600 //350//((int)(200*(mirror?1:1.5))) // make sure to update the variable below accordingly!!!
+#define MAX_MESH_WIDTH 600 //((int)(300*1.5)) // for use in initialization of arrays	
+#define MESH_HEIGHT  ((int)(MESH_WIDTH*(((double)FIELD_HEIGHT)/FIELD_WIDTH))) // mesh density auto scales to the chosen field dimensions
+#define MAX_MESH_HEIGHT  ((int)(MAX_MESH_WIDTH*(((double)FIELD_HEIGHT)/FIELD_WIDTH)))
+int meshHeight;
+int meshWidth;
+
+#define INIT_MESH_SIZE max( MESH_WIDTH, MESH_HEIGHT) // the dimensions of the square array used in FFT, UPDATE THE VARIABLE BELOW IF YOU CHANGE THIS
+#define MAX_INIT_MESH_SIZE max( MAX_MESH_WIDTH, MAX_MESH_HEIGHT) // for use in array initialization
+//#define KMIN      5                 //  KMIN cycles per MESH_WIDTH.
+#define KMIN2     (KMIN*KMIN)      //  Frequency squared.  i.e.  sqrt(KMAX2) cycles per MESH_WIDTH.
+//#define KMAX      9.5                //  KMAX cycles per MESH_WIDTH.
+#define KMAX2     (KMAX*KMAX)      //  Frequency squared.  i.e.  sqrt(KMAX2) cycles per MESH_WIDTH
 
 #define CURVATURE_DIAGNOSTIC_MODE FALSE
 #define ROTATE FALSE // model rotates around for debugging purposes
@@ -65,11 +100,6 @@ bool wobble;
 double startTime;
 double getSecondsSinceProgramStart();
 void startWobble();
-
-#define MESH_WIDTH   350//((int)(200*(mirror?1:1.5))) // make sure to update the variable below accordingly!!!
-#define MAX_MESH_WIDTH 350//((int)(300*1.5)) // for use in initialization of arrays	
-#define MESH_HEIGHT  ((int)(MESH_WIDTH*(((double)FIELD_HEIGHT)/FIELD_WIDTH))) // mesh density auto scales to the chosen field dimensions
-#define MAX_MESH_HEIGHT  ((int)(MAX_MESH_WIDTH*(((double)FIELD_HEIGHT)/FIELD_WIDTH)))
 
 //texture params
 // note: the texture is composed of quads floating above an ambient surface
@@ -89,13 +119,6 @@ GLfloat meshPlaneNormal[3];
 #define MONITOR_SIZE_IN_INCHES 24.0//17.3
 #define MONITOR_RESOLUTION_WIDTH 1920.0//1600.0
 #define MONITOR_RESOLUTION_HEIGHT 1200.0//900.0
-
-#define INIT_MESH_SIZE max( MESH_WIDTH, MESH_HEIGHT) // the dimensions of the square array used in FFT, UPDATE THE VARIABLE BELOW IF YOU CHANGE THIS
-#define MAX_INIT_MESH_SIZE max( MAX_MESH_WIDTH, MAX_MESH_HEIGHT) // for use in array initialization
-#define KMIN      5                 //  KMIN cycles per MESH_WIDTH.
-#define KMIN2     (KMIN*KMIN)      //  Frequency squared.  i.e.  sqrt(KMAX2) cycles per MESH_WIDTH.
-#define KMAX      9.5                //  KMAX cycles per MESH_WIDTH.
-#define KMAX2     (KMAX*KMAX)      //  Frequency squared.  i.e.  sqrt(KMAX2) cycles per MESH_WIDTH
 
 #define DEFAULT_FULLSCREEN_CHOICE false
 #define PRESENT_FULLSCREEN_CHOICE FALSE
@@ -133,7 +156,7 @@ int currentTestConditionCombinationIndex;
 // dot placement constraint constants
 #define MIN_DISTANCE_FROM_DOT_TO_EDGE (MESH_HEIGHT/3.5)
 #define COLOR_MIN_BLUE FALSE
-#define PLACE_DOT_ON_EXTREMA TRUE
+#define PLACE_DOT_ON_EXTREMA FALSE //CHANGED
 #define DOT_PREIMAGE_TIME 0.34
 bool showDotPreimage;
 double timeAtWhichDotPreimageAppeared;
@@ -317,7 +340,11 @@ static materialStruct whiteDiffuseMaterial = {
 
 void setMaterial(materialStruct *materials);
 
-
+//GLfloat ***getMirrorTransformedSurface(GLfloat*** origSurface, GLfloat distanceToSurface);
+GLfloat *** getIntegratedSurface(GLfloat ***origSurface, int dim1, int dim2);
+GLfloat *** getIntegratedSurface_1D(GLfloat ***origSurface, int dim1, int dim2);
+GLfloat *** convertCartesianSurfaceToPolar (GLfloat ***cartesianSurface, GLfloat distanceToSurface, int dim1, int dim2);
+GLfloat *** convertPolarSurfaceToCartesian (GLfloat ***polarSurface, GLfloat distanceToSurface, int dim1, int dim2);
 
 // holds the total number of times that we've seen each test condition with the current subject
 // the array is of length 2^NUMBER_OF_TEST_CONDITIONS
@@ -330,21 +357,31 @@ int *testConditionsTried;
 // this variable denotes the maximum number of times that we allow each test condition to have been seen up until now
 int currentBoundOnTestConditionsTried;
 
-// list of usable image filenames
-// also, they have a color depth of 32 bits - as hardcoded into bmp.cpp		
-#define NUM_TEXTURES 5
-GLuint	texture[NUM_TEXTURES];	
-#define TEXTURE_SIZE 1024 // sphere mapped textures in opengl must be square with a width of a power of 2
+
+/*
+std::string textureFilenames [NUM_TEXTURES] = {
+	"textures\\environmentMap_5.bmp",
+"textures\\environmentMap_6.bmp",
+"textures\\environmentMap_7.bmp",
+"textures\\environmentMap_8.bmp",
+"textures\\environmentMap_9.bmp",
+"textures\\environmentMap_10.bmp",
+"textures\\environmentMap_11.bmp",
+"textures\\environmentMap_12.bmp"};
+*/
+
+//#define TEXTURE_SIZE 1024 // sphere mapped textures in opengl must be square with a width of a power of 2
+/*
 std::string textureFilenames [NUM_TEXTURES] = {
 	"textures\\1076035-Grilltexture-FurSlipons.bmp",
 	"textures\\Crack_Texture_by_struckdumb.bmp",
 	"textures\\stone_wall_texture_A270663.bmp",
-//	"textures\\stump-ring-texture.bmp",
+//	"textures\\stump-ring-texture.bmp",	
 //	"textures\\texture1.bmp",
 	"textures\\texture-hz6t5.bmp",
 	"textures\\textures-large-155.bmp"};
 //	"textures\\adornedwithgold-136849_wallpaper.jpg-art-texture-pattern-print-16.bmp"};
-	
+	*/
 GLfloat averageTextureColor[NUM_TEXTURES][3];
 
 

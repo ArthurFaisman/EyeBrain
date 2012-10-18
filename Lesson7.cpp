@@ -138,7 +138,9 @@ GLvoid ReSizeGLScene(GLsizei width, GLsizei height)		// Resize And Initialize Th
 int InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 {
 
-	srand( time(NULL));
+#if USE_RANDOMIZED_MESH
+		srand( time(NULL));
+#endif
 
 	timeOut = false;
 	clickAllowed = false;
@@ -153,6 +155,9 @@ int InitGL(GLvoid)										// All Setup For OpenGL Goes Here
 	lastAnswerCorrect = false;
 	lastAnswerIncorrect = false;
 #endif
+
+	meshHeight = MESH_HEIGHT;
+	meshWidth = MESH_WIDTH;
 
 	startTime = getSecondsSinceProgramStart();
 
@@ -771,10 +776,10 @@ void drawWavyField(){
 		//		setMaterial(&whiteAmbientMaterial);
 
 #if OPTIMIZE_TEXTURE_DRAWING
-		int earlyIndexWidth = TEXTURE_DRAW_BORDER_PROPORTION*MESH_WIDTH/2;
-		int lateIndexWidth = (1.0-TEXTURE_DRAW_BORDER_PROPORTION/2)*MESH_WIDTH;
-		int earlyIndexHeight = TEXTURE_DRAW_BORDER_PROPORTION*MESH_HEIGHT/2;
-		int lateIndexHeight = (1.0-TEXTURE_DRAW_BORDER_PROPORTION/2)*MESH_HEIGHT;
+		int earlyIndexWidth = TEXTURE_DRAW_BORDER_PROPORTION*meshWidth/2;
+		int lateIndexWidth = (1.0-TEXTURE_DRAW_BORDER_PROPORTION/2)*meshWidth;
+		int earlyIndexHeight = TEXTURE_DRAW_BORDER_PROPORTION*meshHeight/2;
+		int lateIndexHeight = (1.0-TEXTURE_DRAW_BORDER_PROPORTION/2)*meshHeight;
 
 		// draw flat underlying quad to optimize rendering
 		glBegin(GL_QUADS);
@@ -789,10 +794,10 @@ void drawWavyField(){
 #else 
 		double temp1, temp2;
 		glShadeModel(GL_SMOOTH);
-		for (int i = 0; i < MESH_HEIGHT - 1; i++){
+		for (int i = 0; i < meshHeight - 1; i++){
 			glBegin(GL_TRIANGLE_STRIP);
 
-			for (int j = 0; j < MESH_WIDTH*2; j++){
+			for (int j = 0; j < meshWidth*2; j++){
 				glNormal3f(normField[i + j%2][j/2][0],normField[i + j%2][j/2][1],normField[i + j%2][j/2][2]);
 				glVertex3f(wavyField[i + j%2][j/2][0],wavyField[i + j%2][j/2][1],wavyField[i + j%2][j/2][2]);
 
@@ -811,10 +816,10 @@ void drawWavyField(){
 
 
 		glShadeModel(GL_SMOOTH);
-		for (int i = 0; i < MESH_HEIGHT - 1; i++){
+		for (int i = 0; i < meshHeight - 1; i++){
 			glBegin(GL_TRIANGLE_STRIP);
 
-			for (int j = 0; j < MESH_WIDTH*2; j++){
+			for (int j = 0; j < meshWidth*2; j++){
 #if CURVATURE_DIAGNOSTIC_MODE
 				if ( evaluateCurvatureDiagnosticCriterion(i + j%2, j/2)){
 					setMaterial(&redAmbientMaterial);
@@ -839,7 +844,8 @@ void drawDot(GLfloat dotScaleFactor){
 		wavyField[dotMeshCoordinates[0]][dotMeshCoordinates[1]][2]);
 
 	glScalef(dotScaleFactor, dotScaleFactor, dotScaleFactor);
-	drawSphere(200);
+	//UNCOMMENT DO DRAW DOT
+	//drawSphere(200);
 
 	glPopMatrix();
 
@@ -853,9 +859,9 @@ void pickNewDotLocation(){
 	int widthBoundMax;
 
 	heightBoundMin = MIN_DISTANCE_FROM_DOT_TO_EDGE;
-	heightBoundMax = MESH_HEIGHT - MIN_DISTANCE_FROM_DOT_TO_EDGE;
+	heightBoundMax = meshHeight - MIN_DISTANCE_FROM_DOT_TO_EDGE;
 	widthBoundMin = MIN_DISTANCE_FROM_DOT_TO_EDGE;
-	widthBoundMax = MESH_WIDTH - MIN_DISTANCE_FROM_DOT_TO_EDGE;
+	widthBoundMax = meshWidth - MIN_DISTANCE_FROM_DOT_TO_EDGE;
 
 
 	bool foundGoodDot = false;
@@ -1030,6 +1036,8 @@ void drawCylinder(int numSides){
 
 void generateNewMesh(){
 
+	meshWidth = MESH_WIDTH;
+	meshHeight = MESH_HEIGHT;
 
 	int dims[] = {INIT_MESH_SIZE, INIT_MESH_SIZE};
 
@@ -1073,13 +1081,13 @@ void generateNewMesh(){
 
 	double runningSum = 0;
 
-	for (int i=0; i < MESH_HEIGHT; i++){
-		for (int j=0; j < MESH_WIDTH; j++){
+	for (int i=0; i < meshHeight; i++){
+		for (int j=0; j < meshWidth; j++){
 			runningSum += radiusField[i][j]*radiusField[i][j];
 		}
 	}
 
-	runningSum /= MESH_HEIGHT*MESH_WIDTH - 1;
+	runningSum /= meshHeight*meshWidth - 1;
 	runningSum = sqrt(runningSum);
 
 #endif
@@ -1094,23 +1102,70 @@ void generateNewMesh(){
 	GLfloat currentWidth;
 
 
-	for (int i = 0; i < MESH_HEIGHT; i++){
-		currentHeight = ((GLfloat)FIELD_HEIGHT)*i/(MESH_HEIGHT-1)-(((float)FIELD_HEIGHT)/2);
-		for (int j = 0; j < MESH_WIDTH; j++){
+	for (int i = 0; i < meshHeight; i++){
+		currentHeight = ((GLfloat)FIELD_HEIGHT)*i/(meshHeight-1)-(((float)FIELD_HEIGHT)/2);
+		for (int j = 0; j < meshWidth; j++){
 
-			currentWidth = ((GLfloat)FIELD_WIDTH)*j/(MESH_WIDTH-1)-(((float)FIELD_WIDTH)/2);
+			currentWidth = ((GLfloat)FIELD_WIDTH)*j/(meshWidth-1)-(((float)FIELD_WIDTH)/2);
 
 			wavyField[i][j][0] = currentHeight; //x
 			wavyField[i][j][1] = currentWidth; //y
+#if USE_SINE_SURFACE
+			wavyField[i][j][2] = sin(currentHeight*4)*sin(currentWidth*4)*HIGH_AMPLITUDE;
+#else
 			wavyField[i][j][2] = radiusField[i][j]; //z
+#endif
+
+#if USE_1D_FUNCTION
+			wavyField[i][j][2] = wavyField[i][0][2];
+#endif
 
 		}
 	}
+	/*
+	GLfloat holder1, holder2, holder3;
 
+	for (int i=0; i < meshHeight; i++){
+		for (int j=0; j < meshHeight; j++){
+			holder1 = wavyField[i][j][0];
+			holder2 = wavyField[i][j][1];
+			holder3 = wavyField[i][j][2];
+		}
+	}
+	*/
 
+#if PROJECT_POLAR
+wavyField = convertCartesianSurfaceToPolar(wavyField, VIEWPOINT_REAL_DISTANCE_TO_SCREEN, meshHeight, meshWidth);
+#endif
 
+#if INTEGRATE_SURFACE
 
+#if USE_1D_FUNCTION
 
+	wavyField = getIntegratedSurface_1D(wavyField, meshHeight, meshWidth);
+	meshHeight --;
+
+#else
+
+	wavyField = getIntegratedSurface(wavyField, meshHeight, meshWidth);
+	meshHeight --; meshWidth --;
+
+#endif
+#endif
+
+#if PROJECT_POLAR
+wavyField = convertPolarSurfaceToCartesian(wavyField, VIEWPOINT_REAL_DISTANCE_TO_SCREEN, meshHeight, meshWidth);
+#endif
+
+	/*
+	for (int i=0; i < meshHeight; i++){
+		for (int j=0; j < meshHeight; j++){
+			holder1 = wavyField[i][j][0];
+			holder2 = wavyField[i][j][1];
+			holder3 = wavyField[i][j][2];
+		}
+	}
+	*/
 
 	GLfloat vec1[3];
 	GLfloat vec2[3];
@@ -1122,8 +1177,8 @@ void generateNewMesh(){
 	GLfloat norm4[3];
 	GLfloat temp;
 	// note that we only handle internal vertices for now
-	for (int i = 1; i< MESH_HEIGHT - 1; i++){
-		for (int j = 1; j < MESH_WIDTH-1; j++){
+	for (int i = 1; i< meshHeight - 1; i++){
+		for (int j = 1; j < meshWidth-1; j++){
 
 			// find norm for the first of four neighboring faces
 			vec1[0] = wavyField[i][j][0] - wavyField[i][j-1][0];
@@ -1210,17 +1265,17 @@ void generateNewMesh(){
 
 	//mindlessly set normals in border cases to be equal to the nearest fully evaluated normal
 	// note that the four corners of the mesh are all properly instantiated using this method
-	for (int i=0; i < MESH_HEIGHT; i++){
+	for (int i=0; i < meshHeight; i++){
 		for (int k=0; k < 3; k++){
 			normField[i][0][k] = normField[i][1][k];
-			normField[i][MESH_WIDTH-1][k] = normField[i][MESH_WIDTH-2][k];
+			normField[i][meshWidth-1][k] = normField[i][meshWidth-2][k];
 		}
 	}
 
-	for (int j=0; j < MESH_WIDTH; j++){
+	for (int j=0; j < meshWidth; j++){
 		for (int k=0; k < 3; k++){
 			normField[0][j][k] = normField[1][j][k];
-			normField[MESH_HEIGHT-1][j][k] = normField[MESH_HEIGHT-2][j][k];
+			normField[meshHeight-1][j][k] = normField[meshHeight-2][j][k];
 		}
 	}
 
@@ -1235,19 +1290,23 @@ void setModelLocation(){
 	glLoadIdentity();									// Reset The View
 
 
-
 	// just translates into the screen (first two coordinates 0 in the case of MOUSE_POSITION_CHANGES_VIEWPOINT == FALSE)
 	glTranslatef(0.0f, 0.0f, -OPENGL_UNITS_PER_INCH*(VIEWPOINT_REAL_DISTANCE_TO_SCREEN+MODEL_REAL_DEPTH_BEHIND_SCREEN));
 
+#if ROTATE_VERTICALLY
 	glRotatef(90.0, 0.0f, 0.0f, 1.0f);
+#endif
 
-	glRotatef(SLANT_ANGLE*(slant?1:-1), 0.0f, 1.0f, 0.0f);
+	// IF you want to slant, do it directly from model coordinates using height
+	//glRotatef(SLANT_ANGLE*(slant?1:-1), 0.0f, 1.0f, 0.0f);
 
+#if USE_SLANT_DEPENDENT_OFFSET
 	if (slant){
 		glTranslatef(0.3, 0.0f, 0.0f);
 	} else {
 		glTranslatef(-0.3, 0.0f, 0.0f);
 	}
+#endif
 
 	if (wobble){
 		glRotatef(WOBBLE_AMPLITUDE*sin(2*PI*(getSecondsSinceProgramStart()-startTime)/(WOBBLE_PERIOD)), 1.0f, 0.0f, 0.0f);
@@ -1436,8 +1495,8 @@ void drawTexture(){
 	glShadeModel(GL_FLAT);
 	glBegin(GL_QUADS);
 
-	for (int i = 0; i < MESH_HEIGHT; i++){
-		for (int j=0; j < MESH_WIDTH; j++){
+	for (int i = 0; i < meshHeight; i++){
+		for (int j=0; j < meshWidth; j++){
 			if (textureExists[i][j]){
 				glNormal3f(normField[i][j][0],normField[i][j][1],normField[i][j][2]);
 				for (int k=0; k < 4; k++){ //cycle through the texture points
@@ -1456,8 +1515,8 @@ void setTexture(){
 	// it also assumes that the z component of each normal is nonzero as we have in the wavy field case
 
 	// these are the offsets from the center of each quad to each of the corners along the respective dimensions
-	double widthDelta = 0.5*((double)FIELD_WIDTH)/MESH_WIDTH;
-	double heightDelta = 0.5*((double)FIELD_HEIGHT)/MESH_HEIGHT;
+	double widthDelta = 0.5*((double)FIELD_WIDTH)/meshWidth;
+	double heightDelta = 0.5*((double)FIELD_HEIGHT)/meshHeight;
 
 	double currentX, currentY;
 
@@ -1465,8 +1524,8 @@ void setTexture(){
 	double currRecArea;
 	double baseRecArea = 4*widthDelta*heightDelta;
 
-	for (int i = 0; i < MESH_HEIGHT; i++){
-		for (int j=0; j < MESH_WIDTH; j++){
+	for (int i = 0; i < meshHeight; i++){
+		for (int j=0; j < meshWidth; j++){
 
 
 
@@ -1582,4 +1641,502 @@ void drawAllObjects(){
 			}
 			glEnable(GL_DEPTH_TEST);
 		}
+}
+
+//GLfloat ***getMirrorTransformedSurface(GLfloat*** origSurface, GLfloat distanceToSurface){
+//
+//	// note that this function is one big memory leak
+//	//ALSO note that it assumes that origSurface has square dimensions
+//
+//	GLfloat ***polarSurface = new GLfloat ** [MAX_MESH_HEIGHT];
+//	GLfloat ***outputSurface = new GLfloat ** [MAX_MESH_HEIGHT];
+////	GLfloat **boxSums = new GLfloat * [MAX_MESH_HEIGHT];
+//	GLfloat **quadVolumes = new GLfloat * [MAX_MESH_HEIGHT];
+//	GLfloat **integralsOverY = new GLfloat * [MAX_MESH_HEIGHT];
+//	GLfloat **doubleIntegral = new GLfloat * [MAX_MESH_HEIGHT];
+////	GLfloat **sumOverX = new GLfloat * [MAX_MESH_HEIGHT];
+////	GLfloat **sumOverY = new GLfloat * [MAX_MESH_HEIGHT];
+//
+//	for (int i = 0; i < MAX_MESH_HEIGHT; i++){
+//		polarSurface[i] = new GLfloat * [MAX_MESH_WIDTH];
+//		outputSurface[i] = new GLfloat * [MAX_MESH_WIDTH];
+////		boxSums[i] = new GLfloat [MAX_MESH_WIDTH];
+//		quadVolumes[i] = new GLfloat [MAX_MESH_WIDTH];
+//		integralsOverY[i] = new GLfloat [MAX_MESH_WIDTH];
+//		doubleIntegral[i] = new GLfloat [MAX_MESH_WIDTH];
+////		sumOverX[i] = new GLfloat [MAX_MESH_WIDTH];
+////		sumOverY[i] = new GLfloat [MAX_MESH_WIDTH];
+//		for (int j=0; j < MAX_MESH_WIDTH; j++){
+//			polarSurface[i][j] = new GLfloat[3];
+//			outputSurface[i][j] = new GLfloat[3];
+//
+//		}
+//	}
+//	
+//	GLfloat initialAveragePolarDistance = 0.0;
+//	int count = 0;
+//
+////	GLfloat holder1[2], holder2[2], holder3[2], holder4[2];
+//
+//	for (int i = 0; i < meshHeight; i++){
+//		for (int j = 0; j < meshWidth; j++){
+//			/*
+//			polarSurface[i][j][0] = (GLfloat) atan( origSurface[i][j][0] / (distanceToSurface - origSurface[i][j][2] ) );
+//			polarSurface[i][j][1] = (GLfloat) atan( origSurface[i][j][1] / (distanceToSurface - origSurface[i][j][2] ) );
+//			polarSurface[i][j][2] = (GLfloat) sqrt( pow(origSurface[i][j][0],2) + pow(origSurface[i][j][1],2) + pow(distanceToSurface - origSurface[i][j][2],2));
+//			*/
+//			
+//			polarSurface[i][j][0] = origSurface[i][j][0];
+//			polarSurface[i][j][1] = origSurface[i][j][1];
+//			polarSurface[i][j][2] = origSurface[i][j][2];
+//			
+//
+//			initialAveragePolarDistance += polarSurface[i][j][2];
+//			count++;
+//		}
+//	}
+//
+//	initialAveragePolarDistance /= count;
+//
+////	GLfloat prevTheta_x = polarSurface[0][0][0];
+////	GLfloat prevTheta_y = polarSurface[0][0][1];
+//
+//	GLfloat quadVector1[2];// = new GLfloat[2];
+//	GLfloat quadVector2[2];// = new GLfloat[2];
+//	GLfloat quadArea;
+//
+//	/*
+//	note change of meshHeight/Width!
+//	*/
+//
+//	meshHeight--;
+//	meshWidth--;
+//	for (int i = 0; i < meshHeight; i++){
+//		for (int j = 0; j < meshWidth; j++){
+//
+//			for (int k = 0; k <= 1; k++){
+//				/*
+//				quadVector1[k] = polarSurface[i+1][j][k] - polarSurface[i][j][k];
+//				quadVector2[k] = polarSurface[i+1][j+1][k] - polarSurface[i][j+1][k];
+//				*/
+//
+//				quadVector1[k] = polarSurface[i+1][j+1][k] - polarSurface[i][j][k];
+//				quadVector2[k] = polarSurface[i+1][j][k] - polarSurface[i][j+1][k];
+//
+//				/*
+//				holder1[k] = polarSurface[i][j][k];
+//				holder2[k] = polarSurface[i+1][j][k];
+//				holder3[k] = polarSurface[i+1][j+1][k];
+//				holder4[k] = polarSurface[i][j+1][k];
+//				*/
+//			}
+//
+//			quadArea = 0.5*abs( quadVector1[0]*quadVector2[1]  - quadVector2[0] * quadVector1[1]);
+////			quadArea = abs((polarSurface[i+1][j+1][0] - polarSurface[i][j][0])*(polarSurface[i+1][j+1][1] - polarSurface[i][j][1]));
+//
+//			quadVolumes[i][j] = quadArea*polarSurface[i][j][2];
+//
+////			totalSum += quadArea * polarSurface[i][j][2];
+//
+//			// note in place editing, this is dependent on the fact that the third coordiante of polarSurface
+//			// is useless for computing quadArea
+//			/*
+//			polarSurface[i][j][2] = totalSum;
+//
+//			sumOfIntegralVals += totalSum;
+//			numValsSeen ++;
+//			*/
+//		}
+//	}
+//	
+//	GLfloat sum;
+//
+//	for (int i=0; i < meshHeight; i++){
+//		sum = 0;
+//		for (int j=0; j < meshWidth; j++){
+//			sum += quadVolumes[i][j];
+//			integralsOverY[i][j] = sum;
+//		}
+//	}
+//
+//	for (int j=0; j < meshWidth; j++){
+//		sum = 0;
+//		for (int i=0; i < meshHeight; i++){
+//			sum += quadVolumes[i][j];
+//			doubleIntegral[i][j] = sum;
+//		}
+//	}
+//
+//	/*
+//	for (int i=0; i < meshHeight; i++){
+//		for (int j=0; j < meshWidth; j++){
+//			if (i == 0){
+//				sumOverX[i][j] = quadVolumes[i][j];
+//			} else {
+//				sumOverX[i][j] = sumOverX[i-1][j] + quadVolumes[i][j];
+//			}
+//			if (j == 0){
+//				sumOverY[i][j] = quadVolumes[i][j];
+//			} else {
+//				sumOverY[i][j] = sumOverY[i][j-1] + quadVolumes[i][j];
+//			}
+//		}
+//	}
+//
+//	//boxSums[0][0] = quadVolumes[0][0];
+//
+//	for (int i = 0; i < meshHeight; i++){
+//		for (int j=0; j < meshWidth; j++){
+//			if (i == 0){
+//				boxSums[i][j] = sumOverY[i][j];
+//			} else if (j == 0){
+//				boxSums[i][j] = sumOverX[i][j];
+//			} else {
+//				boxSums[i][j] = boxSums[i-1][j-1] + sumOverX[i-1][j] + sumOverY[i][j-1] + quadVolumes[i][j];
+//			}
+//		}
+//	}
+//	*/
+//	/*
+//	for (int i = 0; i < meshHeight; i++){
+//		for (int j = 0; j < meshWidth; j++){
+//			totalSum = 0.0;
+//			for (int i1 = 0; i1 <= i; i1++){
+//				for (int j1 = 0; j1 <= j; j1++){
+//					// totalSum += area of base quadrilateral times height of function at that point
+//					totalSum += quadAreas[i1][j1]*polarSurface[i1][j1][2];
+//				}
+//			}
+//			runningSums[i][j] = totalSum;
+//		}
+//	}
+//*/
+//
+//
+//
+//	GLfloat totalSum = 0.0;
+//	GLfloat sumOfIntegralVals = 0.0;
+//	int numValsSeen = 0;
+//
+//	for (int i = 0; i < meshHeight; i++){
+//		for (int j = 0; j < meshWidth; j++){
+//			numValsSeen ++;
+//			sumOfIntegralVals += doubleIntegral[i][j];
+//		}
+//	}
+//
+//	GLfloat offsetValue = sumOfIntegralVals / ((float) numValsSeen);
+////	GLfloat offsetValue = polarSurface[meshHeight/2][meshWidth/2][2];
+//	
+////	GLfloat max = -10000000, min=10000000;
+//	for (int i = 0; i < meshHeight; i++){
+//		for (int j = 0; j < meshWidth; j++){
+//			polarSurface[i][j][2] = (doubleIntegral[i][j] - offsetValue)*COMPRESSION_MULTIPLIER;// + initialAveragePolarDistance;
+//			//polarSurface[i][j][2] = 0.0;
+////			if (polarSurface[i][j][2] > max) max = polarSurface[i][j][2];
+////			if (polarSurface[i][j][2] < min) min = polarSurface[i][j][2];
+//		}
+//	}
+//	
+//	for (int i = 0; i < meshHeight; i++){
+//		for (int j = 0; j < meshWidth; j++){
+//			
+//			/*
+//			outputSurface[i][j][0] =  tan(polarSurface[i][j][0]) * abs(polarSurface[i][j][2]) / 
+//				sqrt( pow( tan( polarSurface[i][j][0] ) , 2 ) + pow( tan( polarSurface[i][j][1] ) , 2 ) + 1 );
+//			outputSurface[i][j][1] = tan(polarSurface[i][j][1]) * abs(polarSurface[i][j][2]) / 
+//				sqrt( pow( tan( polarSurface[i][j][0] ) , 2 ) + pow( tan( polarSurface[i][j][1] ) , 2 ) + 1 );
+//			outputSurface[i][j][2] = distanceToSurface - abs(polarSurface[i][j][2]) / 
+//				sqrt( pow( tan( polarSurface[i][j][0] ) , 2 ) + pow( tan( polarSurface[i][j][1] ) , 2 ) + 1 );
+//			*/
+//			
+//			outputSurface[i][j][0] = polarSurface[i][j][0];
+//			outputSurface[i][j][1] = polarSurface[i][j][1];
+//			outputSurface[i][j][2] = polarSurface[i][j][2];
+//			
+//		}
+//	}
+//
+//	return outputSurface;
+//
+//}
+
+
+GLfloat *** getIntegratedSurface(GLfloat ***origSurface, int dim1, int dim2){
+	//origSurface[i][j][k] gives the kth coordinate of the mesh element, s.t. the third coordinate is a function of the first two
+
+	//decrement the dimensions since taking integral
+	dim1 --;
+	dim2 --;
+
+	GLfloat ***outputSurface = new GLfloat ** [dim1];
+	GLfloat **quadVolumes = new GLfloat * [dim1];
+	GLfloat **integralsOverY = new GLfloat * [dim1];
+	GLfloat **doubleIntegral = new GLfloat * [dim1];
+
+	GLfloat origOffset = 0;
+	int numElements = 0;
+
+	for (int i = 0; i < dim1; i++){
+		outputSurface[i] = new GLfloat * [dim2];
+		quadVolumes[i] = new GLfloat [dim2];
+		integralsOverY[i] = new GLfloat [dim2];
+		doubleIntegral[i] = new GLfloat [dim2];
+		for (int j=0; j < dim2; j++){
+			outputSurface[i][j] = new GLfloat[3];
+		}
+	}
+
+	// calculate the average offset of the input surface, this will be duplicated in the integrated one
+
+	for (int i = 0; i < dim1; i++){
+		for (int j=0; j < dim2; j++){
+			origOffset += origSurface[i][j][2];
+			numElements++;
+		}
+	}
+
+	origOffset /= numElements;
+
+	GLfloat quadPoint1[2];
+	GLfloat quadPoint2[2];
+	GLfloat quadPoint3[2];
+	GLfloat quadPoint4[2];
+	GLfloat currQuadArea;
+
+	for (int i = 0; i < dim1; i++){
+		for (int j = 0; j < dim2; j++){
+			for (int k=0; k < 2; k++){
+				quadPoint1[k] = origSurface[i][j][k];
+				quadPoint2[k] = origSurface[i+1][j][k];
+				quadPoint3[k] = origSurface[i+1][j+1][k];
+				quadPoint4[k] = origSurface[i][j+1][k];
+			}
+			currQuadArea = abs( quadPoint1[0]*quadPoint2[1] - quadPoint1[1]*quadPoint2[0] + 
+								quadPoint2[0]*quadPoint3[1] - quadPoint2[1]*quadPoint3[0] +
+								quadPoint3[0]*quadPoint4[1] - quadPoint3[1]*quadPoint4[0] +
+								quadPoint4[0]*quadPoint1[1] - quadPoint4[1]*quadPoint1[0] ) / 2.0;
+
+//			GLfloat alternateQuadArea = (quadPoint3[0] - quadPoint1[0])*(quadPoint3[1] - quadPoint1[1]);
+//			currQuadArea = alternateQuadArea;
+
+			quadVolumes[i][j] = currQuadArea * origSurface[i][j][2];
+
+		}
+	}
+
+	GLfloat sum;
+
+	for (int i=0; i < dim1; i++){
+		sum = 0;
+		for (int j=0; j < dim2; j++){
+			sum += quadVolumes[i][j];
+			integralsOverY[i][j] = sum;
+		}
+	}
+
+	GLfloat resultingOffset = 0;
+
+	for (int j=0; j < dim2; j++){
+		sum = 0;
+		for (int i=0; i < dim1; i++){
+			sum += integralsOverY[i][j];
+			doubleIntegral[i][j] = sum;
+			resultingOffset += doubleIntegral[i][j];
+		}
+	}
+
+	resultingOffset /= numElements;
+
+	for (int i = 0; i < dim1; i++){
+		for (int j = 0; j < dim2; j++){
+			doubleIntegral[i][j] -= resultingOffset;
+			doubleIntegral[i][j] *= COMPRESSION_MULTIPLIER;
+			doubleIntegral[i][j] += origOffset;
+
+			outputSurface[i][j][0] = origSurface[i][j][0];
+			outputSurface[i][j][1] = origSurface[i][j][1];
+			outputSurface[i][j][2] = doubleIntegral[i][j];
+		}
+	}
+
+	return outputSurface;
+
+}
+
+GLfloat *** convertCartesianSurfaceToPolar (GLfloat ***cartesianSurface, GLfloat distanceToSurface, int dim1, int dim2){
+
+	/*
+	i,j indexes surface
+	cartesianSurface[i][j][0] = x coordinate of mesh
+	cartesianSurface[i][j][1] = y coordinate of mesh
+	cartesianSurface[i][j][2] = height of mesh
+	*/
+
+	/*
+
+	i,j indexes surface
+	polarSurface[i][j][0] = theta_x
+	polarSurface[i][j][1] = theta_y
+	polarSurface[i][j][2] = depth of mesh wrt perspective
+
+	*/
+
+	GLfloat ***polarSurface = new GLfloat ** [dim1];
+
+	for (int i = 0; i < dim1; i++){
+		polarSurface[i] = new GLfloat * [dim2];
+		for (int j=0; j < dim2; j++){
+			polarSurface[i][j] = new GLfloat[3];
+		}
+	}
+
+	for (int i = 0; i < dim1; i++){
+		for (int j=0; j < dim2; j++){
+
+			polarSurface[i][j][0] = (GLfloat) atan( cartesianSurface[i][j][0] / (distanceToSurface - cartesianSurface[i][j][2] ) );
+			polarSurface[i][j][1] = (GLfloat) atan( cartesianSurface[i][j][1] / (distanceToSurface - cartesianSurface[i][j][2] ) );
+			polarSurface[i][j][2] = (GLfloat) sqrt( pow(cartesianSurface[i][j][0],2) + pow(cartesianSurface[i][j][1],2) + pow(distanceToSurface - cartesianSurface[i][j][2],2));
+
+		}
+	}
+
+	return polarSurface;
+}
+
+GLfloat *** convertPolarSurfaceToCartesian (GLfloat ***polarSurface, GLfloat distanceToSurface, int dim1, int dim2){
+
+	/*
+	i,j indexes surface
+	cartesianSurface[i][j][0] = x coordinate of mesh
+	cartesianSurface[i][j][1] = y coordinate of mesh
+	cartesianSurface[i][j][2] = height of mesh
+	*/
+
+	/*
+
+	i,j indexes surface
+	polarSurface[i][j][0] = theta_x
+	polarSurface[i][j][1] = theta_y
+	polarSurface[i][j][2] = depth of mesh wrt perspective
+
+	*/
+
+	GLfloat ***cartesianSurface = new GLfloat ** [dim1];
+
+	for (int i = 0; i < dim1; i++){
+		cartesianSurface[i] = new GLfloat * [dim2];
+		for (int j=0; j < dim2; j++){
+			cartesianSurface[i][j] = new GLfloat[3];
+		}
+	}
+
+	for (int i = 0; i < dim1; i++){
+		for (int j=0; j < dim2; j++){
+
+			cartesianSurface[i][j][0] =  tan(polarSurface[i][j][0]) * abs(polarSurface[i][j][2]) / 
+				sqrt( pow( tan( polarSurface[i][j][0] ) , 2 ) + pow( tan( polarSurface[i][j][1] ) , 2 ) + 1 );
+
+			cartesianSurface[i][j][1] = tan(polarSurface[i][j][1]) * abs(polarSurface[i][j][2]) / 
+				sqrt( pow( tan( polarSurface[i][j][0] ) , 2 ) + pow( tan( polarSurface[i][j][1] ) , 2 ) + 1 );
+
+			cartesianSurface[i][j][2] = distanceToSurface - abs(polarSurface[i][j][2]) / 
+				sqrt( pow( tan( polarSurface[i][j][0] ) , 2 ) + pow( tan( polarSurface[i][j][1] ) , 2 ) + 1 );
+
+		}
+	}
+
+	return cartesianSurface;
+}
+
+
+// integrates over origSurface[i][dim2/2]
+GLfloat *** getIntegratedSurface_1D(GLfloat ***origSurface, int dim1, int dim2){
+	//origSurface[i][j][k] gives the kth coordinate of the mesh element, s.t. the third coordinate is a function of the first two
+
+	//decrement the dimension (for all j1, j2, origSurface[i][j1] == origSurface[i][j2])
+	dim1 --;
+
+	GLfloat ***outputSurface = new GLfloat ** [dim1];
+	GLfloat *intervalAreas = new GLfloat [dim1];
+	GLfloat *integral = new GLfloat [dim1];
+	GLfloat *heightVals = new GLfloat[dim1];
+
+	for (int i = 0; i < dim1; i++){
+		outputSurface[i] = new GLfloat * [dim2];
+		for (int j=0; j < dim2; j++){
+			outputSurface[i][j] = new GLfloat[3];
+		}
+	}
+
+	// calculate the average offset of the input surface, this will be duplicated in the integrated one
+
+//	GLfloat inputMin = origSurface[0][0][2];
+//	GLfloat inputMax = origSurface[0][0][2];
+
+//	for (int i = 0; i < dim1; i++){
+//		for (int j=0; j < dim2; j++){
+////			inputMin = min(inputMin, origSurface[i][j][2]);
+////			inputMax = max(inputMax, origSurface[i][j][2]);
+//			origOffset += origSurface[i][j][2];
+//			numElements++;
+//		}
+//	}
+
+	GLfloat origOffset = 0;
+
+	for (int i = 0; i < dim1; i++){
+		heightVals[i] = origSurface[i][dim2/2][2];
+		origOffset += heightVals[i];
+	}
+
+	origOffset /= dim1;
+
+	GLfloat intervalLength;
+
+	for (int i = 0; i < dim1; i++){
+
+//		intervalLength = abs(origSurface[i+1][dim2/2][0] - origSurface[i][dim2/2][0]);
+
+		// !! hardcoded interval length !!
+		intervalLength = 1.0;
+
+		heightVals[i] -= origOffset;
+
+		intervalAreas[i] = intervalLength * heightVals[i];
+
+	}
+
+	GLfloat sum = 0.0;
+	GLfloat resultingOffset = 0;
+
+	for (int i=0; i < dim1; i++){
+		sum += intervalAreas[i];
+		integral[i] = sum;
+		resultingOffset += integral[i];
+	}
+
+	resultingOffset /= dim1;
+
+//	GLfloat outputMin = integral[0];
+//	GLfloat outputMax = integral[0];
+
+	for (int i = 0; i < dim1; i++){
+		
+		integral[i] -= resultingOffset;
+		integral[i] *= COMPRESSION_MULTIPLIER_1D;
+//		integral[i] = sin(i/40.0);
+		integral[i] += origOffset;
+		for (int j = 0; j < dim2; j++){
+			outputSurface[i][j][0] = origSurface[i][j][0];
+			outputSurface[i][j][1] = origSurface[i][j][1];
+			outputSurface[i][j][2] = integral[i];
+
+//			outputMin = min(inputMin, outputSurface[i][j][2]);
+//			outputMax = max(inputMax, outputSurface[i][j][2]);
+		}
+	}
+
+	return outputSurface;
+
 }

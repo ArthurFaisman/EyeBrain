@@ -1,72 +1,72 @@
-﻿Build started 05/06/2012 4:18:59 PM.
-     1>Project "C:\Users\Arthur\Dropbox\psychophysics\EyeBrain_finalExperiment_2\lesson7.vcxproj" on node 2 (build target(s)).
+﻿Build started 18/10/2012 12:29:51 PM.
+     1>Project "C:\Users\Arthur\Dropbox\psychophysics\EyeBrain\lesson7.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating ".\Debug\lesson7.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _VC80_UPGRADE=0x0600 /D _MBCS /Gm /EHsc /RTC1 /MTd /GS /Gy- /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\Debug\\" /Fd".\Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt lesson7.cpp
          lesson7.cpp
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.h(174): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.h(175): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.h(243): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.h(243): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.h(243): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.h(250): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.h(259): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.h(259): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.h(259): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.h(261): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.h(261): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.h(261): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.h(270): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.h(277): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.h(285): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.h(292): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(46): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.h(197): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.h(198): warning C4244: 'initializing' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.h(266): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.h(266): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.h(266): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.h(273): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.h(282): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.h(282): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.h(282): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.h(284): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.h(284): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.h(284): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.h(293): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.h(300): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.h(308): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.h(315): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(46): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(90): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(97): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(141): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(855): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(856): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(857): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(858): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(941): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(961): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(961): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(961): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(962): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(962): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(962): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(963): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(963): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(963): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(964): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(964): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(964): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(982): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(983): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(991): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(992): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(1008): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(1009): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(1021): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(1022): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(1070): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(1089): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(1244): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(1247): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(1249): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(1253): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(1489): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(1490): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(1493): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(1571): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\arthur\dropbox\psychophysics\eyebrain_finalexperiment_2\lesson7.cpp(1579): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(90): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(97): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(230): warning C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(861): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(862): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(863): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(864): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(937): warning C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(947): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(967): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(967): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(967): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(968): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(968): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(968): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(969): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(969): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(969): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(970): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(970): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(970): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(988): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(989): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(997): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(998): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(1014): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(1015): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(1027): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(1028): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(1078): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(1097): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(1312): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(1548): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(1549): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(1552): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(1630): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(1638): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(1918): warning C4244: '=' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>c:\users\arthur\dropbox\psychophysics\eyebrain\lesson7.cpp(2127): warning C4305: '*=' : truncation from 'double' to 'GLfloat'
          All outputs are up-to-date.
        ManifestResourceCompile:
-         All outputs are up-to-date.
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo".\Debug\lesson7.exe.embed.manifest.res" .\Debug\lesson7_manifest.rc 
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:".\Debug\lesson7.exe" /INCREMENTAL /NOLOGO opengl32.lib glu32.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:".\Debug\lesson7.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Arthur\Dropbox\psychophysics\EyeBrain_finalExperiment_2\Debug\lesson7.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\Debug\lesson7.lib" /MACHINE:X86 .\Debug\lesson7.exe.embed.manifest.res
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:".\Debug\lesson7.exe" /INCREMENTAL /NOLOGO opengl32.lib glu32.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:".\Debug\lesson7.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Arthur\Dropbox\psychophysics\EyeBrain\Debug\lesson7.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\Debug\lesson7.lib" /MACHINE:X86 .\Debug\lesson7.exe.embed.manifest.res
          .\Debug\bmp.obj
          .\Debug\curvatures.obj
          .\Debug\dataProcess.obj
@@ -80,12 +80,12 @@
          All outputs are up-to-date.
        LinkEmbedManifest:
          All outputs are up-to-date.
-         lesson7.vcxproj -> C:\Users\Arthur\Dropbox\psychophysics\EyeBrain_finalExperiment_2\.\Debug\lesson7.exe
+         lesson7.vcxproj -> C:\Users\Arthur\Dropbox\psychophysics\EyeBrain\.\Debug\lesson7.exe
        FinalizeBuildStatus:
          Deleting file ".\Debug\lesson7.unsuccessfulbuild".
          Touching ".\Debug\lesson7.lastbuildstate".
-     1>Done Building Project "C:\Users\Arthur\Dropbox\psychophysics\EyeBrain_finalExperiment_2\lesson7.vcxproj" (build target(s)).
+     1>Done Building Project "C:\Users\Arthur\Dropbox\psychophysics\EyeBrain\lesson7.vcxproj" (build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:01.69
+Time Elapsed 00:00:11.26
